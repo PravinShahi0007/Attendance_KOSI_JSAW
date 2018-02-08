@@ -306,6 +306,8 @@ namespace Attendance.Classes
                     Publish(tMsg);
 
                 }
+
+
             }
         }
 
@@ -813,7 +815,7 @@ namespace Attendance.Classes
                 bool hasRows = DsEmp.Tables.Cast<DataTable>().Any(table => table.Rows.Count != 0);
                 if (hasRows)
                 {
-                    clsProcess pro = new clsProcess();
+                    
 
                     string filenminfo = "AutoProcess_Info_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
                     string fullpath2 = Path.Combine(Loginfopath, filenminfo);
@@ -829,6 +831,8 @@ namespace Attendance.Classes
                             return;
                         }
 
+                        
+
                         _StatusAutoProcess = true;
                         
                         string tEmpUnqID = dr["EmpUnqID"].ToString();
@@ -841,6 +845,7 @@ namespace Attendance.Classes
                         
                         string err = string.Empty;
                         int tres = 0;
+                        clsProcess pro = new clsProcess();
                         pro.AttdProcess(tEmpUnqID,FromDt,ToDt,out tres,out err);
 
                         if (!string.IsNullOrEmpty(err))
@@ -1216,17 +1221,13 @@ namespace Attendance.Classes
                 Scheduler.Publish(tMsg);
 
                 
-                if (_StatusAutoArrival == false && 
-                    _StatusAutoDownload == false && 
-                    _StatusAutoProcess == false && 
-                    _StatusAutoTimeSet == false && 
-                    _StatusWorker == false)
+                if (_StatusWorker == false)
                 {
 
 
 
                     string cnerr = string.Empty;
-                    string sql = "Select top 100 w.* from attdworker w where w.doneflg = 0 Order by MsgId desc" ;
+                    string sql = "Select top 200 w.* from attdworker w where w.doneflg = 0 Order by MsgId desc" ;
                     DataSet DsEmp = Utils.Helper.GetData(sql, Utils.Helper.constr,out cnerr);
                     if (!string.IsNullOrEmpty(cnerr))
                     {
@@ -1238,7 +1239,7 @@ namespace Attendance.Classes
                     if (hasRows)
                     {
 
-                        clsProcess pro = new clsProcess();
+                       
 
                         foreach (DataRow dr in DsEmp.Tables[0].Rows)
                         {
@@ -1266,6 +1267,7 @@ namespace Attendance.Classes
 
                             string err = string.Empty;
                             int tres = 0;
+                            clsProcess pro = new clsProcess();
                             pro.AttdProcess(tEmpUnqID, tFromDt, tToDt, out tres, out err);
 
                             if (!string.IsNullOrEmpty(err))
