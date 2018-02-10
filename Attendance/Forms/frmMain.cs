@@ -190,7 +190,7 @@ namespace Attendance
                                                       Globals.G_NetworkDomain,
                                                       Globals.G_NetworkPass))
                         {
-                            string fullpath = Path.Combine(Globals.G_UpdateChkPath, "Attendance.exe");
+                            string fullpath = Path.Combine(Globals.G_UpdateChkPath, "AttendanceJSAW.exe");
                             if (File.Exists(fullpath))
                             {
                                 servermodified = File.GetLastWriteTime(fullpath);
