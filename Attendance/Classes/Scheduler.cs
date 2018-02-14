@@ -1176,8 +1176,7 @@ namespace Attendance.Classes
                         }
                         else if(ReportType.ToUpper().Contains("ARRIVAL"))
                         {
-                            DateTime RptDate = System.DateTime.Now;
-                            RptDate = RptDate.AddDays(-1);
+                            DateTime RptDate = System.DateTime.Now;                            
 
                             rsExec.LoadReport(ReportPath, historyID);
                             ParameterValue[] executionParams1 = new ParameterValue[3];
