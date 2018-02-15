@@ -151,6 +151,8 @@ namespace Attendance.Classes
         {   
            var properties = new System.Collections.Specialized.NameValueCollection();
             properties["quartz.threadPool.threadCount"] = "20";
+            properties["org.quartz.scheduler.instanceName"] = "QuartzSchedulerJSAW";
+            properties["org.quartz.scheduler.instanceId"] = "NON_CLUSTERED_JSAW";
 
             StdSchedulerFactory schedulerFactory = new StdSchedulerFactory(properties); //getting the scheduler factory
             scheduler = schedulerFactory.GetScheduler();//getting the instance
@@ -293,7 +295,11 @@ namespace Attendance.Classes
                     ITrigger trigger = TriggerBuilder.Create()
                         .WithIdentity(triggerid, "TRG_AutoProcess")
                         .StartNow()
-                        .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(tTime.Hours, tTime.Minutes))
+                        .WithSchedule(
+                            CronScheduleBuilder.DailyAtHourAndMinute(tTime.Hours, tTime.Minutes)
+                            .WithMisfireHandlingInstructionFireAndProceed()
+                            )
+                        
                         .Build();
 
                     // Tell quartz to schedule the job using our trigger
