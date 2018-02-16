@@ -1182,7 +1182,8 @@ namespace Attendance
                                 #region Fix_For_GI_SMG
                                 if (drAttd["ConsShift"].ToString() == "DD")
                                 {
-                                    if (Convert.ToDateTime(drAttd["ConsOut"]) >= ShiftOutFrom && Convert.ToDateTime(drAttd["ConsOut"]) <= ShiftOutTo)
+                                    //if (Convert.ToDateTime(drAttd["ConsOut"]) >= ShiftOutFrom && Convert.ToDateTime(drAttd["ConsOut"]) <= ShiftOutTo)
+                                    if (Emp.OTFLG)
                                     {
                                         drAttd["ConsShift"] = "DD";
                                         daAttdData.Update(dsAttdData, "AttdData");
@@ -1190,7 +1191,6 @@ namespace Attendance
                                     else
                                     {
                                         drAttd["ConsShift"] = "GI";
-
                                         DataRow[] drs = Globals.dtShift.Select("ShiftCode = 'GI'");
                                         foreach (DataRow tdr in drs)
                                         {
