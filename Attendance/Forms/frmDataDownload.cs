@@ -65,6 +65,12 @@ namespace Attendance.Forms
 
         private void SetRights()
         {
+            if (Utils.User.GUserID == "SERVER")
+            {
+                GRights = "AUDV";
+            }
+            
+            
             if (GRights.Contains("AUDV"))
             {
                 

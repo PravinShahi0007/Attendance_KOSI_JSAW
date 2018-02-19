@@ -599,6 +599,11 @@ namespace Attendance.Forms
                 serverstatus.Stop();
             }
 
+            if (Utils.User.GUserID == "SERVER")
+            {
+                GRights = "AUDV";
+            }
+
             if (GRights.Contains("XXXV"))
             {
                 btnProcess.Enabled = false;
