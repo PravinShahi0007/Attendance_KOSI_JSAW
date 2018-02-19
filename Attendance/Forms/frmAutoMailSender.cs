@@ -86,8 +86,13 @@ namespace Attendance.Forms
 
         private void btnSend_Click(object sender, EventArgs e)
         {
-            
             bool userok = GetUserVerify();
+            if (Utils.User.GUserID == "SERVER")
+            {
+                userok = true;
+            }
+            
+            
             bool sqlok = BuildSQL();
             if (!userok)
                 return;

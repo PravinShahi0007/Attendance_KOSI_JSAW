@@ -154,6 +154,8 @@ namespace Attendance
                 mnuRFIDUser.Enabled = true;
                 mnuDataDownload.Enabled = true;
                 mnuDataProcess.Enabled = true;
+                mnuAutoMailSender.Enabled = true;
+                mnuCostCodeManPowerProcess.Enabled = true;
 
                 Form t = Application.OpenForms["frmServerStatus"];
 
