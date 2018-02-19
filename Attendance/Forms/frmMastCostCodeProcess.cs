@@ -66,16 +66,16 @@ namespace Attendance.Forms
             tDate = txtDate.DateTime;    
             tCount = Convert.ToInt32(Utils.Helper.GetDescription("Select Count(*) From MastCostCodeManPowerRpt where tDate ='" + tDate.ToString("yyyy-MM-dd") + "'", Utils.Helper.constr));
         
-            //check for already process...
-            TimeSpan ts = (tCurDate - tDate);
-            if (Math.Abs(ts.Days) > 1)
-            {
-                if(tCount > 0)
-                {
-                    MessageBox.Show("System Does not allow to process/Process Already Done....","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
-                    return;
-                }
-            }
+            ////check for already process...
+            //TimeSpan ts = (tCurDate - tDate);
+            //if (Math.Abs(ts.Days) > 1)
+            //{
+            //    if(tCount > 0)
+            //    {
+            //        MessageBox.Show("System Does not allow to process/Process Already Done....","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+            //        return;
+            //    }
+            //}
 
            
             Application.DoEvents();
