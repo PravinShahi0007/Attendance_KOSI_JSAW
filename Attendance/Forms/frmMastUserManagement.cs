@@ -1702,15 +1702,10 @@ namespace Attendance.Forms
             
             this.Cursor = Cursors.Default;
             
-            if (string.IsNullOrEmpty(err))
-            {
-                MessageBox.Show("Download Logs & Clear Completed...","Information",MessageBoxButtons.OK,MessageBoxIcon.Information);
-                m.AttdLogClear(out err);
-            }
-            else
-            {
-                MessageBox.Show(err, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); 
-            }
+            
+            MessageBox.Show("Download Logs & Clear Completed...","Information",MessageBoxButtons.OK,MessageBoxIcon.Information);
+            m.AttdLogClear(out err);
+            
            
             m.DisConnect(out nerr);
 
