@@ -1173,7 +1173,7 @@ namespace Attendance.Classes
                             executionParams1[2].Name = "tDate";
                             executionParams1[2].Value = RptDate.ToString("yyyy-MM-dd");
                             rsExec.SetExecutionParameters(executionParams1, "en-us");
-                            string substr2 = "JSAW-" + dr["Param1WrkGrp"].ToString() + "-Daily Performance Report For " + RptDate.ToString("dd-MMM");
+                            string substr2 = "JSAW-" + dr["Param1WrkGrp"].ToString() + "-ID-" + dr["SubScriptionID"].ToString() + " : Daily Performance Report For " + RptDate.ToString("dd-MMM");
                             results = rsExec.Render(format, deviceInfo, out extension, out mimeType, out encoding, out warnings, out streamIDs);
                             
                             MailAttachment m1 = new MailAttachment(results, attchnamePrefix + "Daily Performance Report.xls");
@@ -1196,7 +1196,7 @@ namespace Attendance.Classes
 
                             
                             rsExec.SetExecutionParameters(executionParams1, "en-us");
-                            string substr2 = "JSAW-" + dr["Param1WrkGrp"].ToString() + "-Daily Arrival Report For " + RptDate.ToString("dd-MMM");
+                            string substr2 = "JSAW-" + dr["Param1WrkGrp"].ToString() + "-ID-" + dr["SubScriptionID"].ToString() + " : Daily Arrival Report For " + RptDate.ToString("dd-MMM");
                             results = rsExec.Render(format, deviceInfo, out extension, out mimeType, out encoding, out warnings, out streamIDs);
                             MailAttachment m1 = new MailAttachment(results, attchnamePrefix + "Daily Arrival Report.xls");
                             Email(dr["EmailTo"].ToString(), dr["EmailCopy"].ToString(), dr["BCCTo"].ToString(),
