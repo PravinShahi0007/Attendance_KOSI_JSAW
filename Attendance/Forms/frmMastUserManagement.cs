@@ -1285,11 +1285,19 @@ namespace Attendance.Forms
 
                         foreach (UserBioInfo emp in tmpuser)
                         {
-                            sql = "Insert Into tmp_machineusers (ReqNo,MachineIP,EmpUnqID,RFID,AMthD,AddDt,AddID )" +
-                            " Values ('" + reqno + "','" + ip + "','" + emp.UserID + "','" + emp.CardNumber + "','0',GetDate(),'" + Utils.User.GUserID +  "')";
+                            try
+                            {
+                                sql = "Insert Into tmp_machineusers (ReqNo,MachineIP,EmpUnqID,RFID,AMthD,AddDt,AddID )" +
+                            " Values ('" + reqno + "','" + ip + "','" + emp.UserID + "','" + emp.CardNumber + "','0',GetDate(),'" + Utils.User.GUserID + "')";
 
-                            cmd = new SqlCommand(sql, cn);
-                            cmd.ExecuteNonQuery();
+                                cmd = new SqlCommand(sql, cn);
+                                cmd.ExecuteNonQuery();
+                            }
+                            catch (Exception ex)
+                            {
+
+                            }
+                            
                         }
                         
                         //update other info in tmp_machineusers
