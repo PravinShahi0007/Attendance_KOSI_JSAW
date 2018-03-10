@@ -1947,11 +1947,13 @@ namespace Attendance
                     //otmin = ((int)OverTime - (othrs * 60));
                     ot = othrs;
 
-                    if (otmin >= 21 && otmin <= 50)
-                    {
-                        ot = othrs + 0.5;
-                    }
-                    else if (otmin > 50 && otmin <= 59)
+                    //if (otmin >= 21 && otmin <= 50)
+                    //{
+                    //    ot = othrs + 0.5;
+                    //}
+                    //else 
+                    
+                    if (otmin > 50 && otmin <= 59)
                     {
                         ot = othrs + 1;
                     }
@@ -2003,11 +2005,12 @@ namespace Attendance
                         //otmin = ((int)OverTime - (othrs * 60));
                         ot = othrs;
 
-                        if (otmin >= 21 && otmin <= 50)
-                        {
-                            ot = othrs + 0.5;
-                        }
-                        else if (otmin > 50 && otmin <= 59)
+                        //if (otmin >= 21 && otmin <= 50)
+                        //{
+                        //    ot = othrs + 0.5;
+                        //}
+                        //else 
+                        if (otmin > 50 && otmin <= 59)
                         {
                             ot = othrs + 1;
                         }
@@ -2047,11 +2050,12 @@ namespace Attendance
                         //otmin = ((int)OverTime - (othrs * 60));
                         ot = othrs;
 
-                        if (otmin >= 21 && otmin <= 50)
-                        {
-                            ot = othrs + 0.5;
-                        }
-                        else if (otmin > 50 && otmin <= 59)
+                        //if (otmin >= 21 && otmin <= 50)
+                        //{
+                        //    ot = othrs + 0.5;
+                        //}
+                        //else 
+                        if (otmin > 50 && otmin <= 59)
                         {
                             ot = othrs + 1;
                         }
