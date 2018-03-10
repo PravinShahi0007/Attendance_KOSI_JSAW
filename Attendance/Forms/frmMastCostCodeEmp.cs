@@ -243,6 +243,8 @@ namespace Attendance.Forms
                         sql = string.Format(sql, ctrlEmp1.txtEmpUnqID.Text.Trim(), txtCostCode.Text.Trim().ToString().ToUpper(),
                             txtValidFrom.DateTime.ToString("yyyy-MM-dd"),
                             Utils.User.GUserID);
+                        cmd.CommandText = sql;
+                        cmd.ExecuteNonQuery();
 
                         sql = "Update MastEmp set CostCode = '" + txtCostCode.Text.Trim().ToString().ToUpper() + "' Where EmpUnqID ='" + ctrlEmp1.txtEmpUnqID.Text.Trim() + "' and CompCode = '01'";
                         cmd.CommandText = sql;

@@ -349,7 +349,7 @@ namespace Attendance.Forms
             txtShiftCode_Validated(sender, e);
 
             txtWeekOff.Text = "SUN";
-
+            txtESINo.Text = "";
 
 
             string err = DataValidate();
