@@ -62,6 +62,7 @@
             this.mnuMastGrade = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuMastCont = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuMastHoliday = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuMastHolidayOpt = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAutoMail = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuCreateMuster = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuMastRules = new System.Windows.Forms.ToolStripMenuItem();
@@ -116,7 +117,7 @@
             this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
             this.stsUserDesc = new System.Windows.Forms.ToolStripStatusLabel();
             this.stsExtra = new System.Windows.Forms.ToolStripStatusLabel();
-            this.mnuMastHolidayOpt = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuMastException = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -406,6 +407,13 @@
             this.mnuMastHoliday.Text = "Holiday Calander";
             this.mnuMastHoliday.Click += new System.EventHandler(this.mnuMastHoliday_Click);
             // 
+            // mnuMastHolidayOpt
+            // 
+            this.mnuMastHolidayOpt.Name = "mnuMastHolidayOpt";
+            this.mnuMastHolidayOpt.Size = new System.Drawing.Size(208, 22);
+            this.mnuMastHolidayOpt.Text = "Optional Holidy Calander";
+            this.mnuMastHolidayOpt.Click += new System.EventHandler(this.mnuMastHolidayOpt_Click);
+            // 
             // mnuAutoMail
             // 
             this.mnuAutoMail.Name = "mnuAutoMail";
@@ -435,7 +443,8 @@
             this.mnuMastJob,
             this.mnuImportEmp,
             this.mnuValidityMass,
-            this.mnuMisConduct});
+            this.mnuMisConduct,
+            this.mnuMastException});
             this.mnuEmployee.Name = "mnuEmployee";
             this.mnuEmployee.Size = new System.Drawing.Size(205, 22);
             this.mnuEmployee.Text = "Employee";
@@ -822,12 +831,12 @@
             this.stsExtra.Name = "stsExtra";
             this.stsExtra.Size = new System.Drawing.Size(0, 17);
             // 
-            // mnuMastHolidayOpt
+            // mnuMastException
             // 
-            this.mnuMastHolidayOpt.Name = "mnuMastHolidayOpt";
-            this.mnuMastHolidayOpt.Size = new System.Drawing.Size(208, 22);
-            this.mnuMastHolidayOpt.Text = "Optional Holidy Calander";
-            this.mnuMastHolidayOpt.Click += new System.EventHandler(this.mnuMastHolidayOpt_Click);
+            this.mnuMastException.Name = "mnuMastException";
+            this.mnuMastException.Size = new System.Drawing.Size(184, 22);
+            this.mnuMastException.Text = "Exception Master";
+            this.mnuMastException.Click += new System.EventHandler(this.mnuMastException_Click);
             // 
             // frmMain
             // 
@@ -943,6 +952,7 @@
         private System.Windows.Forms.ToolStripMenuItem mnuAbout;
         private System.Windows.Forms.ToolStripMenuItem mnuMastStatSec;
         private System.Windows.Forms.ToolStripMenuItem mnuMastHolidayOpt;
+        private System.Windows.Forms.ToolStripMenuItem mnuMastException;
 
 
     }

@@ -435,6 +435,8 @@ namespace Attendance
                                         drAttd["ConsOut"] = DBNull.Value;
                                     }
 
+                                    
+
                                     daAttdData.Update(dsAttdData, "AttdData");
 
                                     #endregion SanctionOutTime
@@ -556,7 +558,55 @@ namespace Attendance
                                             daAttdData.Update(dsAttdData, "AttdData");
                                         }
                                     }
+
+
+
+
                                     #endregion Double_Check_ConsOut
+
+
+                                    //## 07-04-2018 Commit AutoOut
+                                    #region AutoOut
+                                   
+                                    if (drAttd["ConsOut"] == DBNull.Value && drAttd["ConsIn"] != DBNull.Value)
+                                    {
+                                        //check if Emp has auto out exception
+                                        int tcnt = Convert.ToInt32(Utils.Helper.GetDescription("Select Count(*) From MastException Where EmpUnqID ='" + drAttd["EmpUnqID"].ToString() + "' and ExecAutoOut = 1", Utils.Helper.constr));
+                                        if (tcnt > 0)
+                                        {
+                                            string tmpInTime = Convert.ToDateTime(drAttd["ConsIn"]).ToString("HH:mm:ss");
+                                            string tmpDate = Convert.ToDateTime(drAttd["ConsIn"]).ToString("yyyy-MM-dd");
+                                            string tmpsql = "SELECT [ShiftStart] FROM [MastShift] where '" + tmpInTime + "' between ShiftINFrom and ShiftINTo order by shiftend desc";
+                                            string tmpStartTime = Utils.Helper.GetDescription(tmpsql, Utils.Helper.constr);
+ 
+
+                                            DateTime t2intime = Convert.ToDateTime(tmpDate + " " + tmpStartTime).AddHours(8);
+                                            DateTime tSanDate = Convert.ToDateTime(t2intime.ToString("yyyy-MM-dd"));
+                                            using (SqlConnection tmpcn = new SqlConnection(Utils.Helper.constr))
+                                            {
+                                                try
+                                                {
+                                                    tmpcn.Open();
+
+                                                    tmpsql = "Insert into MastLeaveSchedule (EmpUnqID,tDate,WrkGrp,ConsOutTime,AddDt,AddID) Values (" +
+                                                        "'" + drAttd["EmpUnqID"].ToString() + "','" + tSanDate.ToString("yyyy-MM-dd") + "','" + Emp.WrkGrp + "'," +
+                                                        "'" + t2intime.ToString("yyyy-MM-dd HH:mm") + "'," +
+                                                        " GetDate(),'SysExec')";
+                                                    SqlCommand tmpcmd = new SqlCommand(tmpsql, tmpcn);
+                                                    tmpcmd.ExecuteNonQuery();
+                                                    drAttd["ConsOut"] = t2intime;
+                                                }
+                                                catch (Exception ex)
+                                                {
+
+                                                }
+
+                                            }
+                                        }
+                                    }
+                                    #endregion
+                                    //#############
+
 
                                     #region Set_Primary_AttdStatus
                                     if (drAttd["ConsIN"] != DBNull.Value && drAttd["ConsOut"] != DBNull.Value)

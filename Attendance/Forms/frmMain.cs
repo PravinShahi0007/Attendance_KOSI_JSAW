@@ -1092,6 +1092,18 @@ namespace Attendance
             
             
         }
+
+        private void mnuMastException_Click(object sender, EventArgs e)
+        {
+            Form t = Application.OpenForms["frmMastException"];
+
+            if (t == null)
+            {
+                Attendance.Forms.frmMastException m = new Attendance.Forms.frmMastException();
+                m.MdiParent = this;
+                m.Show();
+            }
+        }
         
 
     }
