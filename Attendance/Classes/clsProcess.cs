@@ -733,6 +733,24 @@ namespace Attendance
                                         drAttd["ActualStatus"] = "P";
                                     }
 
+
+                                    //bugfix : 07/04/2018 : Reset Sanction ot if status is absent and makesure to round it
+                                    if (drAttd["Status"].ToString() == "A")
+                                    {
+                                        drAttd["ConsOverTime"] = 0;
+                                        drAttd["GracePeriod"] = "";
+                                    }
+                                    else
+                                    {
+                                        double Overtime = 0;
+                                        Overtime = Convert.ToDouble(drAttd["ConsOverTime"]);
+
+                                        if (Overtime >= 1)
+                                        {
+                                            drAttd["ConsOverTime"] = Math.Truncate(Overtime);
+                                        }
+                                    }
+
                                     daAttdData.Update(dsAttdData, "AttdData");
 
                                     #endregion Final_Status_Marking
