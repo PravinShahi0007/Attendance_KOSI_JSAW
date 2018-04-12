@@ -565,7 +565,7 @@ namespace Attendance
                                     #endregion Double_Check_ConsOut
 
 
-                                    //## 07-04-2018 Commit AutoOut
+                                    //## 07-04-2018 Commit AutoOut.. Corrected 12/04/2018->Consider FixShift and AutoShift Employee
                                     #region AutoOut
                                    
                                     if (drAttd["ConsOut"] == DBNull.Value && drAttd["ConsIn"] != DBNull.Value)
@@ -576,11 +576,49 @@ namespace Attendance
                                         {
                                             string tmpInTime = Convert.ToDateTime(drAttd["ConsIn"]).ToString("HH:mm:ss");
                                             string tmpDate = Convert.ToDateTime(drAttd["ConsIn"]).ToString("yyyy-MM-dd");
-                                            string tmpsql = "SELECT [ShiftStart] FROM [MastShift] where '" + tmpInTime + "' between ShiftINFrom and ShiftINTo order by shiftend desc";
-                                            string tmpStartTime = Utils.Helper.GetDescription(tmpsql, Utils.Helper.constr);
+                                            string tmpStartTime = string.Empty;
+                                            string tmpsql = string.Empty;
+                                            double tmpShiftHours = 0;
+                                            if (drAttd["ScheDuleShift"].ToString() != "WO")
+                                            {
+                                                if (string.IsNullOrEmpty(drAttd["ScheDuleShift"].ToString()))
+                                                {
+                                                    //if employee in auto shift
+                                                    tmpsql = "SELECT [ShiftStart] FROM [MastShift] where '" + tmpInTime + "' between ShiftINFrom and ShiftINTo order by shiftend desc";
+                                                    tmpStartTime = Utils.Helper.GetDescription(tmpsql, Utils.Helper.constr,out err);
+                                                    tmpsql = "SELECT [ShiftHrs] FROM [MastShift] where '" + tmpInTime + "' between ShiftINFrom and ShiftINTo order by shiftend desc";
+                                                    tmpShiftHours = Convert.ToDouble(Utils.Helper.GetDescription(tmpsql, Utils.Helper.constr,out err));
+                                                }
+                                                else if (!string.IsNullOrEmpty(drAttd["ScheDuleShift"].ToString()))
+                                                {
+                                                    //if employee in fixshift...
+                                                    tmpsql = "SELECT [ShiftStart] FROM [MastShift] where ShiftCode = '" + drAttd["ScheDuleShift"].ToString() + "' order by shiftend desc";
+                                                    tmpStartTime = Utils.Helper.GetDescription(tmpsql, Utils.Helper.constr,out err);
+                                                    tmpsql = "SELECT [ShiftHrs] FROM [MastShift] where ShiftCode = '" + drAttd["ScheDuleShift"].ToString() + "' order by shiftend desc";
+                                                    tmpShiftHours = Convert.ToDouble(Utils.Helper.GetDescription(tmpsql, Utils.Helper.constr,out err));
+                                                }
+                                            }
+                                            else
+                                            {
+                                                //if employee in wo...
+                                                if (Emp.AutoShift)
+                                                {
+                                                    tmpsql = "SELECT [ShiftStart] FROM [MastShift] where '" + tmpInTime + "' between ShiftINFrom and ShiftINTo order by shiftend desc";
+                                                    tmpStartTime = Utils.Helper.GetDescription(tmpsql, Utils.Helper.constr,out err);
+                                                    tmpsql = "SELECT [ShiftHrs] FROM [MastShift] where '" + tmpInTime + "' between ShiftINFrom and ShiftINTo order by shiftend desc";
+                                                    tmpShiftHours = Convert.ToDouble(Utils.Helper.GetDescription(tmpsql, Utils.Helper.constr,out err));
+                                                }
+                                                else
+                                                {
+                                                    tmpsql = "SELECT [ShiftStart] FROM [MastShift] where ShiftCode = '" + Emp.ShiftCode + "' order by shiftend desc";
+                                                    tmpStartTime = Utils.Helper.GetDescription(tmpsql, Utils.Helper.constr,out err);
+                                                    tmpsql = "SELECT [ShiftHrs] FROM [MastShift] where ShiftCode = '" + Emp.ShiftCode + "' order by shiftend desc";
+                                                    tmpShiftHours = Convert.ToDouble(Utils.Helper.GetDescription(tmpsql, Utils.Helper.constr,out err));
+                                                }
+                                            }
  
 
-                                            DateTime t2intime = Convert.ToDateTime(tmpDate + " " + tmpStartTime).AddHours(8);
+                                            DateTime t2intime = Convert.ToDateTime(tmpDate + " " + tmpStartTime).AddHours(tmpShiftHours);
                                             DateTime tSanDate = Convert.ToDateTime(t2intime.ToString("yyyy-MM-dd"));
                                             using (SqlConnection tmpcn = new SqlConnection(Utils.Helper.constr))
                                             {
