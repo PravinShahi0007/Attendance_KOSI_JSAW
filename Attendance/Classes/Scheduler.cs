@@ -669,7 +669,7 @@ namespace Attendance.Classes
                                 tMsg.MsgType = "Auto Download";
                                 tMsg.Message = ip + "->Error :" + err;
                                 Scheduler.Publish(tMsg);
-                                continue;
+                                //continue;
                             }
 
 
