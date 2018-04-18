@@ -374,6 +374,9 @@ namespace Attendance.Classes
             {
                 file.WriteLine("");
             }
+
+            string write_err = string.Empty;
+
             //write text file and also store in db
             foreach (AttdLog t in AttdLogRec)
             {
@@ -381,7 +384,7 @@ namespace Attendance.Classes
                 if (!string.IsNullOrEmpty(dberr))
                 {
                     t.Error = dberr;
-
+                    write_err += dberr;
                     err += "Error while store to db : " + t.EmpUnqID + " : " + dberr + Environment.NewLine;
                 }
 
@@ -391,12 +394,17 @@ namespace Attendance.Classes
                 }
             }
 
-            if (this._autoclear)
+            if (string.IsNullOrEmpty(write_err))
             {
-                string terr = string.Empty;
-                AttdLogClear(out terr);
-                err += terr;
+                if (this._autoclear)
+                {
+                    string terr = string.Empty;
+                    AttdLogClear(out terr);
+                    err += terr;
+                }
             }
+
+            
         }
 
         /// <summary>
