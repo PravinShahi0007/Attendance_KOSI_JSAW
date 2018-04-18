@@ -435,8 +435,8 @@ namespace Attendance.Forms
         private void btnClearMach_Click(object sender, EventArgs e)
         {
             string msg = "Make Sure to Download all data in multiple application if running with common machines" + Environment.NewLine +
-                " However Application will download data first, which only accounted in runnint application. " + Environment.NewLine + 
-                " Are You Sure to Clear selected machine ?";
+                "However Application will download data first, which only accounted in running application. " + Environment.NewLine + 
+                "Are You Sure to Clear selected machine ?";
 
 
             DialogResult dr = MessageBox.Show(msg, "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
