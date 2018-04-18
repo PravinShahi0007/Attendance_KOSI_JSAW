@@ -370,7 +370,10 @@ namespace Attendance.Classes
             }
 
             this.CZKEM1.EnableDevice(_machineno, true);//enable the device
-
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(fullpath, true))
+            {
+                file.WriteLine("");
+            }
             //write text file and also store in db
             foreach (AttdLog t in AttdLogRec)
             {
@@ -428,12 +431,12 @@ namespace Attendance.Classes
                         using (SqlCommand cmd = new SqlCommand(sql, cn))
                         {
                             cmd.ExecuteNonQuery();
-                            err = "Duplicate Data Found..";
+                            //err = "Duplicate Data Found..";
                         }
 
                     }catch(Exception ex1)
                     {
-                        err = ex1.ToString();
+                        err += ex1.ToString();
                     }
                     
                 }
