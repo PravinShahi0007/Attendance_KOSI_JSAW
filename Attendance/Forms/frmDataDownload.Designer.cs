@@ -49,6 +49,7 @@
             this.btnSetTime = new DevExpress.XtraEditors.SimpleButton();
             this.btnDownload = new DevExpress.XtraEditors.SimpleButton();
             this.btnSelAll = new DevExpress.XtraEditors.SimpleButton();
+            this.btnClearMach = new DevExpress.XtraEditors.SimpleButton();
             this.tblp.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.grpGrid)).BeginInit();
@@ -272,6 +273,7 @@
             // 
             // grpButtons
             // 
+            this.grpButtons.Controls.Add(this.btnClearMach);
             this.grpButtons.Controls.Add(this.btnExport);
             this.grpButtons.Controls.Add(this.btnUnockMach);
             this.grpButtons.Controls.Add(this.btnRestartMach);
@@ -289,7 +291,7 @@
             // 
             this.btnExport.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnExport.Appearance.Options.UseFont = true;
-            this.btnExport.Location = new System.Drawing.Point(768, 23);
+            this.btnExport.Location = new System.Drawing.Point(816, 23);
             this.btnExport.Name = "btnExport";
             this.btnExport.Size = new System.Drawing.Size(120, 27);
             this.btnExport.TabIndex = 6;
@@ -351,6 +353,17 @@
             this.btnSelAll.Text = "Select &All/None";
             this.btnSelAll.Click += new System.EventHandler(this.btnSelAll_Click);
             // 
+            // btnClearMach
+            // 
+            this.btnClearMach.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnClearMach.Appearance.Options.UseFont = true;
+            this.btnClearMach.Location = new System.Drawing.Point(642, 23);
+            this.btnClearMach.Name = "btnClearMach";
+            this.btnClearMach.Size = new System.Drawing.Size(120, 27);
+            this.btnClearMach.TabIndex = 7;
+            this.btnClearMach.Text = "&Clear Machine";
+            this.btnClearMach.Click += new System.EventHandler(this.btnClearMach_Click);
+            // 
             // frmDataDownload
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -394,5 +407,6 @@
         private DevExpress.XtraEditors.SimpleButton btnSelAll;
         private DevExpress.XtraEditors.SimpleButton btnUnockMach;
         private DevExpress.XtraEditors.SimpleButton btnExport;
+        private DevExpress.XtraEditors.SimpleButton btnClearMach;
     }
 }
