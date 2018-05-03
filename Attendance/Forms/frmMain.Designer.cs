@@ -178,6 +178,7 @@
             // 
             this.mnuConfig.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuMastComp,
+            this.mnuCopyWrkGrpToOther,
             this.mnuMastWrkGrp,
             this.mnuMastUnit,
             this.mnuMessConfig,
@@ -185,8 +186,7 @@
             this.mnuReaderMessAsign,
             this.mnuMastShift,
             this.mnuMastLeave,
-            this.mnuMessInOutMachine,
-            this.mnuCopyWrkGrpToOther});
+            this.mnuMessInOutMachine});
             this.mnuConfig.Name = "mnuConfig";
             this.mnuConfig.Size = new System.Drawing.Size(193, 22);
             this.mnuConfig.Text = "Configuration";
@@ -844,7 +844,7 @@
             // 
             this.mnuCopyWrkGrpToOther.Name = "mnuCopyWrkGrpToOther";
             this.mnuCopyWrkGrpToOther.Size = new System.Drawing.Size(269, 22);
-            this.mnuCopyWrkGrpToOther.Text = "Copy WrkGrp To Other";
+            this.mnuCopyWrkGrpToOther.Text = "Create WrkGrp ->Copy From Other";
             this.mnuCopyWrkGrpToOther.Click += new System.EventHandler(this.mnuCopyWrkGrpToOther_Click);
             // 
             // frmMain
