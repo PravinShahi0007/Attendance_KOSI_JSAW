@@ -1580,8 +1580,8 @@ namespace Attendance.Classes
                 return;
             }
 
-            UserBioInfo emp = new UserBioInfo();
-            emp.SetUserInfoForMachine(tEmpUnqID);
+            //UserBioInfo emp = new UserBioInfo();
+            //emp.SetUserInfoForMachine(tEmpUnqID);
 
             //if (!string.IsNullOrEmpty(emp.WrkGrp))
             //{
@@ -1598,17 +1598,27 @@ namespace Attendance.Classes
             //}
 
             //this.CZKEM1.EnableDevice(_machineno, false);
-           
+            string tmpuser = string.Empty, tmppass = string.Empty;
+            int tmppre = 0;
+            bool tmpenable = false;
 
             if (!_istft)
             {
-                this.CZKEM1.DeleteEnrollData(_machineno, Convert.ToInt32(tEmpUnqID), _machineno, 0);                
+
+                if (this.CZKEM1.GetUserInfo(_machineno, Convert.ToInt32(tEmpUnqID), ref tmpuser, ref tmppass, ref tmppre, ref tmpenable))
+                {
+                    this.CZKEM1.DeleteEnrollData(_machineno, Convert.ToInt32(tEmpUnqID), _machineno, 0);
+                }             
             }
             else
             {
-                this.CZKEM1.SSR_DeleteEnrollData(_machineno, tEmpUnqID, 0);
-                this.CZKEM1.SSR_DeleteEnrollDataExt(_machineno,tEmpUnqID, 12);
-                this.CZKEM1.DelUserFace(_machineno, tEmpUnqID, 50);                
+                if (this.CZKEM1.GetUserInfo(_machineno, Convert.ToInt32(tEmpUnqID), ref tmpuser, ref tmppass, ref tmppre, ref tmpenable))
+                {
+                    //this.CZKEM1.SSR_DeleteEnrollData(_machineno, emp.UserID, 0);
+                    this.CZKEM1.DeleteEnrollData(_machineno, Convert.ToInt32(tEmpUnqID), _machineno, 0);
+                    this.CZKEM1.SSR_DeleteEnrollDataExt(_machineno, tEmpUnqID, 12);
+                    this.CZKEM1.DelUserFace(_machineno, tEmpUnqID, 50);
+                }                               
             }
 
             this.StoreHistoryinDB(tEmpUnqID, false);        
@@ -1656,13 +1666,30 @@ namespace Attendance.Classes
                     StoreHistoryinDB(emp.UserID, false);
                     if (!_istft)
                     {
-                        this.CZKEM1.DeleteEnrollData(_machineno, Convert.ToInt32(emp.UserID), _machineno, 0);
+                        string tmpuser = string.Empty, tmppass = string.Empty;
+                        int tmppre = 0;
+                        bool tmpenable = false;
+                        
+                        if (this.CZKEM1.GetUserInfo(_machineno, Convert.ToInt32(emp.UserID), ref tmpuser, ref tmppass, ref tmppre, ref tmpenable))
+                        {
+                            this.CZKEM1.DeleteEnrollData(_machineno, Convert.ToInt32(emp.UserID), _machineno, 0);
+                        }
+
+                        
                     }
                     else
                     {
-                        this.CZKEM1.SSR_DeleteEnrollData(_machineno, emp.UserID, 0);
-                        this.CZKEM1.SSR_DeleteEnrollDataExt(_machineno, emp.UserID, 12);
-                        this.CZKEM1.DelUserFace(_machineno, emp.UserID, 50);
+                        string tmpuser = string.Empty, tmppass = string.Empty;
+                        int tmppre = 0;
+                        bool tmpenable = false;
+
+                        if (this.CZKEM1.GetUserInfo(_machineno, Convert.ToInt32(emp.UserID), ref tmpuser, ref tmppass, ref tmppre, ref tmpenable))
+                        {
+                            //this.CZKEM1.SSR_DeleteEnrollData(_machineno, emp.UserID, 0);
+                            this.CZKEM1.DeleteEnrollData(_machineno, Convert.ToInt32(emp.UserID), _machineno, 0);
+                            this.CZKEM1.SSR_DeleteEnrollDataExt(_machineno, emp.UserID, 12);
+                            this.CZKEM1.DelUserFace(_machineno, emp.UserID, 50);
+                        }
                         
                     }
                 }// if no errors found 

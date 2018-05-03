@@ -126,10 +126,6 @@
             this.txtIPAddSrc = new DevExpress.XtraEditors.TextEdit();
             this.grpButtons8 = new System.Windows.Forms.GroupBox();
             this.grpButtons7 = new System.Windows.Forms.GroupBox();
-            this.label21 = new System.Windows.Forms.Label();
-            this.btnDownClear = new System.Windows.Forms.Button();
-            this.label20 = new System.Windows.Forms.Label();
-            this.txtIPAddClear = new DevExpress.XtraEditors.TextEdit();
             this.tbp_Upload = new DevExpress.XtraTab.XtraTabPage();
             this.tblp_Upload = new System.Windows.Forms.TableLayoutPanel();
             this.grpButtons10 = new DevExpress.XtraEditors.GroupControl();
@@ -193,8 +189,6 @@
             this.grpButtons6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.txtIPAddDest.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtIPAddSrc.Properties)).BeginInit();
-            this.grpButtons7.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.txtIPAddClear.Properties)).BeginInit();
             this.tbp_Upload.SuspendLayout();
             this.tblp_Upload.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.grpButtons10)).BeginInit();
@@ -588,6 +582,7 @@
             this.grd_Emp.TabIndex = 4;
             this.grd_Emp.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gv_Emp});
+            this.grd_Emp.KeyDown += new System.Windows.Forms.KeyEventHandler(this.grd_Emp_KeyDown);
             // 
             // gv_Emp
             // 
@@ -1474,56 +1469,12 @@
             // grpButtons7
             // 
             this.grpButtons7.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.grpButtons7.Controls.Add(this.label21);
-            this.grpButtons7.Controls.Add(this.btnDownClear);
-            this.grpButtons7.Controls.Add(this.label20);
-            this.grpButtons7.Controls.Add(this.txtIPAddClear);
             this.grpButtons7.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpButtons7.Location = new System.Drawing.Point(3, 119);
             this.grpButtons7.Name = "grpButtons7";
             this.grpButtons7.Size = new System.Drawing.Size(650, 110);
             this.grpButtons7.TabIndex = 2;
             this.grpButtons7.TabStop = false;
-            this.grpButtons7.Text = "Clear Attendance Records";
-            // 
-            // label21
-            // 
-            this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(30, 85);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(429, 14);
-            this.label21.TabIndex = 75;
-            this.label21.Text = "Note : Please Make Sure download logs from all exes before using this option";
-            // 
-            // btnDownClear
-            // 
-            this.btnDownClear.Location = new System.Drawing.Point(339, 28);
-            this.btnDownClear.Name = "btnDownClear";
-            this.btnDownClear.Size = new System.Drawing.Size(118, 50);
-            this.btnDownClear.TabIndex = 74;
-            this.btnDownClear.Text = "Download Logs && Clear";
-            this.btnDownClear.UseVisualStyleBackColor = true;
-            this.btnDownClear.Click += new System.EventHandler(this.btnDownClear_Click);
-            // 
-            // label20
-            // 
-            this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(95, 33);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(73, 14);
-            this.label20.TabIndex = 73;
-            this.label20.Text = "IP Address :";
-            // 
-            // txtIPAddClear
-            // 
-            this.txtIPAddClear.EditValue = "";
-            this.txtIPAddClear.Location = new System.Drawing.Point(174, 30);
-            this.txtIPAddClear.Name = "txtIPAddClear";
-            this.txtIPAddClear.Properties.Mask.EditMask = "[0-9.]+";
-            this.txtIPAddClear.Properties.Mask.MaskType = DevExpress.XtraEditors.Mask.MaskType.RegEx;
-            this.txtIPAddClear.Properties.MaxLength = 15;
-            this.txtIPAddClear.Size = new System.Drawing.Size(159, 20);
-            this.txtIPAddClear.TabIndex = 72;
             // 
             // tbp_Upload
             // 
@@ -1764,9 +1715,6 @@
             this.grpButtons6.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.txtIPAddDest.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtIPAddSrc.Properties)).EndInit();
-            this.grpButtons7.ResumeLayout(false);
-            this.grpButtons7.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.txtIPAddClear.Properties)).EndInit();
             this.tbp_Upload.ResumeLayout(false);
             this.tblp_Upload.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.grpButtons10)).EndInit();
@@ -1894,9 +1842,5 @@
         public DevExpress.XtraEditors.TextEdit txtIPAddSrc;
         private System.Windows.Forms.Button btnBulkDelete;
         private DevExpress.XtraEditors.SimpleButton btnSetTime;
-        private System.Windows.Forms.Label label21;
-        private System.Windows.Forms.Button btnDownClear;
-        private System.Windows.Forms.Label label20;
-        public DevExpress.XtraEditors.TextEdit txtIPAddClear;
     }
 }

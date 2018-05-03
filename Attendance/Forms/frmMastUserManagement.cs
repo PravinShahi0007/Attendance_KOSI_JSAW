@@ -663,7 +663,7 @@ namespace Attendance.Forms
 
             string err;
             //machine selection
-            if (cmbListMachine1.Text.Contains(Globals.MasterMachineIP) && !string.IsNullOrEmpty(Globals.MasterMachineIP))
+            if (cmbListMachine1.Text.Contains(Globals.MasterMachineIP))
             {
                 clsMachine tmach = new clsMachine(Globals.MasterMachineIP, "B");
                 tmach.Connect(out err);
@@ -941,27 +941,32 @@ namespace Attendance.Forms
                     continue;
                 }
 
+                m.EnableDevice(false);
                 //user bulk method
                 List<UserBioInfo> tempusers = new List<UserBioInfo>();
                 m.DeleteUser(tUserList, out err, out tempusers);
-
-                string allerr = "";
-                foreach (UserBioInfo emp in tempusers)
-                {
-                    allerr += (emp.err.Length > 0 ? emp.UserID + emp.err : "");
-                }
-
-                if (string.IsNullOrEmpty(allerr.Replace(Environment.NewLine, "")))
-                {
-                    gv_avbl.SetRowCellValue(i, "Remarks", "Deleted..");
-                }
-                else
-                {
-                    gv_avbl.SetRowCellValue(i, "Remarks", allerr);
-                }
                 m.RefreshData();
+                m.EnableDevice(true);
+                //string allerr = "";
+                //foreach (UserBioInfo emp in tempusers)
+                //{
+                //    allerr += (emp.err.Length > 0 ? emp.UserID + emp.err : "");
+                //}
+
+                //if (string.IsNullOrEmpty(allerr.Replace(Environment.NewLine, "")))
+                //{
+                    gv_avbl.SetRowCellValue(i, "Remarks", "Deleted..");
+                //}
+                //else
+                //{
+                //    gv_avbl.SetRowCellValue(i, "Remarks", allerr);
+                //}
+                //m.RefreshData();
                 m.DisConnect(out err);
-                grd_Emp.DataSource = tempusers.Select(myClass => new { myClass.UserID, myClass.UserName, myClass.err }).ToList();
+                
+                Application.DoEvents();
+
+                //grd_Emp.DataSource = tempusers.Select(myClass => new { myClass.UserID, myClass.UserName, myClass.err }).ToList();
 
             }
 
@@ -1024,7 +1029,7 @@ namespace Attendance.Forms
                 {
                     gv_avbl.SetRowCellValue(i, "Remarks", allerr);
                 }
-                m.RefreshData();
+                //m.RefreshData();
                 m.DisConnect(out err);
                 //grd_Emp.DataSource = tempusers.Select(myClass => new { myClass.UserID, myClass.UserName, myClass.err }).ToList();
 
@@ -1085,7 +1090,7 @@ namespace Attendance.Forms
                 {
                     gv_avbl.SetRowCellValue(i, "Remarks", allerr);
                 }
-                m.RefreshData();
+                //m.RefreshData();
                 m.DisConnect(out err);
                 //grd_Emp.DataSource = tempusers.Select(myClass => new { myClass.UserID, myClass.UserName, myClass.err }).ToList();
 
@@ -1285,19 +1290,11 @@ namespace Attendance.Forms
 
                         foreach (UserBioInfo emp in tmpuser)
                         {
-                            try
-                            {
-                                sql = "Insert Into tmp_machineusers (ReqNo,MachineIP,EmpUnqID,RFID,AMthD,AddDt,AddID )" +
-                            " Values ('" + reqno + "','" + ip + "','" + emp.UserID + "','" + emp.CardNumber + "','0',GetDate(),'" + Utils.User.GUserID + "')";
+                            sql = "Insert Into tmp_machineusers (ReqNo,MachineIP,EmpUnqID,RFID,AMthD,AddDt,AddID )" +
+                            " Values ('" + reqno + "','" + ip + "','" + emp.UserID + "','" + emp.CardNumber + "','0',GetDate(),'" + Utils.User.GUserID +  "')";
 
-                                cmd = new SqlCommand(sql, cn);
-                                cmd.ExecuteNonQuery();
-                            }
-                            catch (Exception ex)
-                            {
-
-                            }
-                            
+                            cmd = new SqlCommand(sql, cn);
+                            cmd.ExecuteNonQuery();
                         }
                         
                         //update other info in tmp_machineusers
@@ -1433,15 +1430,12 @@ namespace Attendance.Forms
 
                 string allerr = string.Empty;
                 m.EnableDevice(false);
-                
-                //distinct users....
-                var tusers = tmpuser.GroupBy(o => o.UserID)
-                                           .Select(o => o.FirstOrDefault());
-
-
-                foreach (UserBioInfo emp in tusers)
+                foreach (UserBioInfo emp in tmpuser)
                 {
-                    m.Register(emp.UserID, out err);
+                    if (emp.Previlege == 3)
+                        continue;
+
+                    m.Register(emp, out err);
                     
                     if(!string.IsNullOrEmpty(err))
                     {
@@ -1591,9 +1585,10 @@ namespace Attendance.Forms
 
                     m.DeleteUser(tEmpUnqID, out err);
                     dr["Remarks"] = (!string.IsNullOrEmpty(err) ? err : "Deleted");
-
+                    Application.DoEvents();
                 }
-                m.RefreshData();
+
+                //m.RefreshData();
                 m.DisConnect(out err);
                 //Cursor.Current = Cursors.Default;
                 MessageBox.Show("file processed Successfully, please check the remarks for indivisual record status...", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -1674,50 +1669,27 @@ namespace Attendance.Forms
             }
         }
 
-        private void btnDownClear_Click(object sender, EventArgs e)
+        private void grd_Emp_KeyDown(object sender, KeyEventArgs e)
         {
-            if (string.IsNullOrEmpty(txtIPAddClear.Text.Trim()))
+            if (e.Control && e.KeyCode == Keys.V)
             {
-                MessageBox.Show("Please Enter IP Address", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                string s = Clipboard.GetText();
+                string[] lines = s.Split('\n');
+
+                foreach (string line in lines)
+                {
+                    string cells = line.Replace("\r", "");
+                    cells = cells.Replace("\t", "");
+
+                    if (!string.IsNullOrEmpty(cells.ToString()))
+                    {
+                        txtEmpUnqID.Text = cells.Substring(0, 8).Trim();
+                        txtEmpUnqID_Validated(sender, e);
+                        btnAddEmp_Click(sender, e);
+                    }
+                }
+
             }
-
-            DialogResult dr = MessageBox.Show("Are you sure to download logs and clear ?..", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            
-            if(dr != DialogResult.Yes)
-                return;
-
-            string ip = txtIPAddClear.Text.Trim().ToString();
-            string ioflg = Utils.Helper.GetDescription("Select IOFLG from ReaderConFig where MachineIP ='" + ip + "'", Utils.Helper.constr);
-
-            clsMachine m = new clsMachine(ip, ioflg);
-            string err = string.Empty;
-            List<AttdLog> records = new List<AttdLog>();
-
-            this.Cursor = Cursors.WaitCursor;
-            //try to connect
-            m.Connect(out err);
-
-            string nerr = string.Empty;
-            if (!string.IsNullOrEmpty(err))
-            {
-                m.DisConnect(out nerr);
-                return;
-            }
-            
-            //get records
-            m.GetAttdRec(out records, out err);
-            
-            this.Cursor = Cursors.Default;
-            
-            
-            MessageBox.Show("Download Logs & Clear Completed...","Information",MessageBoxButtons.OK,MessageBoxIcon.Information);
-            m.AttdLogClear(out err);
-            
-           
-            m.DisConnect(out nerr);
-
-
         }
         
     }
