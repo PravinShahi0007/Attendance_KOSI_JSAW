@@ -1615,7 +1615,7 @@ namespace Attendance.Classes
             {
                 if (this.CZKEM1.SSR_GetUserInfo(_machineno, tEmpUnqID, out tmpuser, out tmppass, out tmppre, out tmpenable))
                 {
-                    this.CZKEM1.SSR_DeleteEnrollData(_machineno, tEmpUnqID, 0);
+                    //this.CZKEM1.SSR_DeleteEnrollData(_machineno, tEmpUnqID, 0);
                     //this.CZKEM1.DeleteEnrollData(_machineno, Convert.ToInt32(tEmpUnqID), _machineno, 0);
                     this.CZKEM1.SSR_DeleteEnrollDataExt(_machineno, tEmpUnqID, 12);
                     this.CZKEM1.DelUserFace(_machineno, tEmpUnqID, 50);
@@ -1688,7 +1688,7 @@ namespace Attendance.Classes
 
                         if (this.CZKEM1.SSR_GetUserInfo(_machineno, emp.UserID, out tmpuser, out tmppass, out tmppre, out tmpenable))
                         {
-                            this.CZKEM1.SSR_DeleteEnrollData(_machineno, emp.UserID, 0);
+                            //this.CZKEM1.SSR_DeleteEnrollData(_machineno, emp.UserID, 0);
                             //this.CZKEM1.DeleteEnrollData(_machineno, Convert.ToInt32(emp.UserID), _machineno, 0);
                             this.CZKEM1.SSR_DeleteEnrollDataExt(_machineno, emp.UserID, 12);
                             this.CZKEM1.DelUserFace(_machineno, emp.UserID, 50);
@@ -2381,16 +2381,32 @@ namespace Attendance.Classes
                         foreach (DataRow dr in ds.Tables[0].Rows)
                         {
                             string tEmpUnqID = dr["EmpUnqID"].ToString();
-                            
+                            string tmpuser2 = string.Empty, tmppass2 = string.Empty;
+                            int tmppre2 = 0;
+                            bool tmpenable2 = false;
+
+
                             if (!_istft)
                             {
                                 this.CZKEM1.DeleteEnrollData(_machineno, Convert.ToInt32(tEmpUnqID), _machineno, 0);
                             }
                             else
                             {
-                                this.CZKEM1.SSR_DeleteEnrollData(_machineno, tEmpUnqID, 0);                                
-                                this.CZKEM1.DelUserFace(_machineno, tEmpUnqID, 50);
-                                this.CZKEM1.SSR_DelUserTmpExt(_machineno, tEmpUnqID, 13);
+                                if (this.CZKEM1.SSR_GetUserInfo(_machineno, tEmpUnqID, out tmpuser2, out tmppass2, out tmppre2, out tmpenable2))
+                                {
+                                    if (tmppre2 != 3)
+                                    {
+                                        //this.CZKEM1.SSR_DeleteEnrollData(_machineno, tEmpUnqID, 0);
+                                        //this.CZKEM1.DeleteEnrollData(_machineno, Convert.ToInt32(emp.UserID), _machineno, 0);
+                                        this.CZKEM1.SSR_DeleteEnrollDataExt(_machineno, tEmpUnqID, 12);
+                                        this.CZKEM1.DelUserFace(_machineno, tEmpUnqID, 50);
+                                    }
+
+                                }
+                                
+                                //this.CZKEM1.SSR_DeleteEnrollData(_machineno, tEmpUnqID, 0);                                
+                                //this.CZKEM1.DelUserFace(_machineno, tEmpUnqID, 50);
+                                //this.CZKEM1.SSR_DelUserTmpExt(_machineno, tEmpUnqID, 13);
                             }             
                             
                         }
