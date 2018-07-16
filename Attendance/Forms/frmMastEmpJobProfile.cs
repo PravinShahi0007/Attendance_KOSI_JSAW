@@ -135,7 +135,8 @@ namespace Attendance.Forms
             txtOldEmpCode.Text = "";
             txtSAPID.Text = "";
             txtWeekOff.Text = "";
-
+            txtShiftCode.Text = "";
+            txtShiftDesc.Text = "";
             chkAutoShift.Checked = false;
             chkOTFlg.Checked = false;
             chkIsHOD.Checked = false;

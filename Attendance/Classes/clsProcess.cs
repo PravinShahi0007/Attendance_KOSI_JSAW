@@ -1035,6 +1035,7 @@ namespace Attendance
         public void CalcShiftOT(SqlDataAdapter daAttdData, DataSet dsAttdData, DataRow drAttd, clsEmp Emp, string tSchShift, out string err)
         {
             err = string.Empty;
+            
             try
             {
 
@@ -1124,6 +1125,17 @@ namespace Attendance
                 {
                     #region AutoSiftCalc
                     // Create DataView
+
+                    #region prefered_shift_1
+                        string tsamesql = "select ShiftCode from MastShift where ShiftStart in (SELECT [ShiftStart] FROM [MastShift] group by CompCode,ShiftStart having count(*) >= 2)" ;
+                        DataSet DsSameShift = Utils.Helper.GetData(tsamesql, Utils.Helper.constr);
+                        string tsameshift = string.Empty;
+                        foreach (DataRow dr in DsSameShift.Tables[0].Rows)
+                        {
+                            tsameshift += dr["ShiftCode"].ToString() + ",";
+                        }
+                    #endregion
+
                     DataView dvShift = new DataView(Globals.dtShift);
                     dvShift.Sort = "ShiftSeq ASC";
 
@@ -1295,29 +1307,59 @@ namespace Attendance
                                     daAttdData.Update(dsAttdData, "AttdData");
                                 }
 
-                                #region Fix_For_GI_SMG
-                                if (drAttd["ConsShift"].ToString() == "DD")
-                                {
-                                    //if (Convert.ToDateTime(drAttd["ConsOut"]) >= ShiftOutFrom && Convert.ToDateTime(drAttd["ConsOut"]) <= ShiftOutTo)
-                                    if (Emp.OTFLG)
-                                    {
-                                        drAttd["ConsShift"] = "DD";
-                                        daAttdData.Update(dsAttdData, "AttdData");
-                                    }
-                                    else
-                                    {
-                                        drAttd["ConsShift"] = "GI";
-                                        DataRow[] drs = Globals.dtShift.Select("ShiftCode = 'GI'");
-                                        foreach (DataRow tdr in drs)
-                                        {
-                                            ShiftHrs = Convert.ToDouble(tdr["Shifthrs"]);
-                                            ShiftEnd = ShiftStart.AddHours(ShiftHrs);
-                                            ShiftBreak = Convert.ToDouble(tdr["BreakHrs"]);
-                                        }
-                                        daAttdData.Update(dsAttdData, "AttdData");
-                                    }
+                                
 
+                                #region prefered_shift_2
+                                if (tsameshift.Contains(drAttd["ConsShift"].ToString()))
+                                {
+                                    //find the prefered shift
+                                    tsamesql = "select isnull(PreferedShifts,'') as t  from MastException where Empunqid = '" + drAttd["EmpUnqID"].ToString() + "'";
+                                    string tmperr = string.Empty;
+                                    string tPreferedShift = Utils.Helper.GetDescription(tsamesql, Utils.Helper.constr,out tmperr);
+
+                                    if(!string.IsNullOrEmpty(tPreferedShift))                                        
+                                    {
+                                        if(tPreferedShift  != drAttd["ConsShift"].ToString() )
+                                        {
+                                            drAttd["ConsShift"] = tPreferedShift;
+                                            DataRow[] drs = Globals.dtShift.Select("ShiftCode = '" + tPreferedShift + "'");
+                                            foreach (DataRow tdr in drs)
+                                            {
+                                                ShiftHrs = Convert.ToDouble(tdr["Shifthrs"]);
+                                                ShiftEnd = ShiftStart.AddHours(ShiftHrs);
+                                                ShiftBreak = Convert.ToDouble(tdr["BreakHrs"]);
+                                            }
+                                            daAttdData.Update(dsAttdData, "AttdData");
+                                        }
+                                    }
                                 }
+
+
+                                #endregion prefered_shift_2
+
+                                #region Fix_For_GI_SMG
+                                //if (drAttd["ConsShift"].ToString() == "DD")
+                                //{
+                                //    //if (Convert.ToDateTime(drAttd["ConsOut"]) >= ShiftOutFrom && Convert.ToDateTime(drAttd["ConsOut"]) <= ShiftOutTo)
+                                //    if (Emp.OTFLG)
+                                //    {
+                                //        drAttd["ConsShift"] = "DD";
+                                //        daAttdData.Update(dsAttdData, "AttdData");
+                                //    }
+                                //    else
+                                //    {
+                                //        drAttd["ConsShift"] = "GI";
+                                //        DataRow[] drs = Globals.dtShift.Select("ShiftCode = 'GI'");
+                                //        foreach (DataRow tdr in drs)
+                                //        {
+                                //            ShiftHrs = Convert.ToDouble(tdr["Shifthrs"]);
+                                //            ShiftEnd = ShiftStart.AddHours(ShiftHrs);
+                                //            ShiftBreak = Convert.ToDouble(tdr["BreakHrs"]);
+                                //        }
+                                //        daAttdData.Update(dsAttdData, "AttdData");
+                                //    }
+
+                                //}
                                 #endregion Fix_For_GI_SMG
 
                                 #region Set_EarlyGoing
