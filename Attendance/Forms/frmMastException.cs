@@ -355,7 +355,7 @@ namespace Attendance.Forms
                 string sql = "";
 
                 sql = "select ShiftCode,'*' as t from MastShift where ShiftStart in ( " +
-                       " SELECT [ShiftStart] FROM [KOSI_ATTENDANCE].[dbo].[MastShift] " +
+                       " SELECT [ShiftStart] FROM MastShift " +
                        "   group by CompCode,ShiftStart " +
                        "   having count(*) >= 2)  ";
 
