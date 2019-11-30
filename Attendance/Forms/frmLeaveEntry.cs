@@ -255,7 +255,7 @@ namespace Attendance.Forms
                     " ,GracePeriod From AttdData " +
                     " Where EmpUnqId ='" + Emp.EmpUnqID + "' And tDate >= '" + txtFromDt2.DateTime.ToString("yyyy-MM-dd") + "' And CompCode = '01' And WrkGrp = '" + Emp.WrkGrp + "' Order By tDate" ;
     
-            SqlSanc = "Select Top 40 " +
+            SqlSanc = "Select Top 100 " +
                       " SanID,tDate,ConsInTime,ConsOutTime,ConsOverTime,ConsShift,SchLeave,AddID,AddDT,Remarks " +
                       " From MastLeaveSchedule " +
                       " Where EmpUnqId ='" + Emp.EmpUnqID + "' And tDate >= '" + txtFromDt2.DateTime.ToString("yyyy-MM-dd") + "' and WrkGrp = '" + Emp.WrkGrp + "' " +

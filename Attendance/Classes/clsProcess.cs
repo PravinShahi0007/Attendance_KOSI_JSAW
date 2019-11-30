@@ -1050,6 +1050,17 @@ namespace Attendance
                 DateTime tDate = Convert.ToDateTime(drAttd["tDate"]);
                 DateTime tInTime;
                 DateTime? tOutTime = new DateTime?();
+                
+                //used for LateCount Exception
+                Boolean tLateExp = false;
+                //check if Emp has LateCome exception
+                int tcnt = Convert.ToInt32(Utils.Helper.GetDescription("Select Count(*) From MastException Where EmpUnqID ='" + drAttd["EmpUnqID"].ToString() + "' and ExecLateCome = 1", Utils.Helper.constr));
+                if (tcnt > 0)
+                {
+                    tLateExp = true;
+
+                }
+
 
                 Boolean tOTFLG = false;
                 tOTFLG = Emp.OTFLG;
@@ -1231,6 +1242,9 @@ namespace Attendance
                                     drAttd["GracePeriod"] = "";
                                 }
 
+
+                                
+
                                 #endregion grace
 
                                 if (tDiff.TotalSeconds >= Globals.G_LateComeSec)
@@ -1290,6 +1304,7 @@ namespace Attendance
 
 
                                     }//new development for dynamic halfday
+
 
                                     daAttdData.Update(dsAttdData, "AttdData");
                                 }
@@ -2056,6 +2071,23 @@ namespace Attendance
 
                 #region OTCalc
             OTCalc:
+
+
+                //used for LateComeException added on 14/06/2019
+                if (Convert.ToDecimal(drAttd["ConsWrkHrs"]) >= 6
+                    && tLateExp == true
+                    && drAttd["LateCome"].ToString() != ""
+                    && seclate > Globals.G_HFSEC_LateCome
+                    && drAttd["GracePeriod"].ToString() != ""
+                    && seclate < 5400
+                    )
+                {
+                    drAttd["GracePeriod"] = "";
+                    drAttd["LateCome"] = "";
+                    drAttd["Halfday"] = 0;
+                    daAttdData.Update(dsAttdData, "AttdData");
+                }
+
 
                 if (drAttd["Status"].ToString() == "A" && Convert.ToBoolean(drAttd["HalfDay"]) == true)
                 {

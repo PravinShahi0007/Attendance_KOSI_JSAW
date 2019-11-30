@@ -1273,8 +1273,19 @@ namespace Attendance.Classes
                             string err = string.Empty;
                             int tres = 0;
                             clsProcess pro = new clsProcess();
-                            pro.AttdProcess(tEmpUnqID, tFromDt, tToDt, out tres, out err);
 
+                            string ProType = dr["ProcessType"].ToString();
+
+                            if (ProType == "ATTD")
+                                pro.AttdProcess(tEmpUnqID, tFromDt, tToDt, out tres, out err);
+                            else if (ProType == "LUNCHINOUT")
+                                pro.LunchInOutProcess(tEmpUnqID, tFromDt, tToDt, out tres);
+                            else if (ProType == "MESS")
+                                pro.LunchProcess(tEmpUnqID, tFromDt, tToDt, out tres);
+                            else
+                                pro.AttdProcess(tEmpUnqID, tFromDt, tToDt, out tres, out err);
+
+                            
                             if (!string.IsNullOrEmpty(err))
                             {
                                 

@@ -1052,8 +1052,18 @@ namespace Attendance.Forms
 
                 }   
             }
-   
-            
+
+            if (txtInTime.Time.Hour > 0 || txtOutTime.Time.Hour > 0 || txtOT.Value > 0)
+            {
+
+                if (reqDate > curDate.Date)
+                {
+                    MessageBox.Show("Future date sanction (In Time/Out Time/TPA Hours) denied", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+            }  
+
             string  sql ;
             string  sqlintime = string.Empty ,sqlouttime = string.Empty, sqlShift = string.Empty, sqlOt = string.Empty, sqlremarks = string.Empty;
    

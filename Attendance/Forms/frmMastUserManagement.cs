@@ -663,7 +663,7 @@ namespace Attendance.Forms
 
             string err;
             //machine selection
-            if (cmbListMachine1.Text.Contains(Globals.MasterMachineIP))
+            if (cmbListMachine1.Text.Contains(Globals.MasterMachineIP) && !string.IsNullOrEmpty(Globals.MasterMachineIP.Trim()) )
             {
                 clsMachine tmach = new clsMachine(Globals.MasterMachineIP, "B");
                 tmach.Connect(out err);
@@ -1290,6 +1290,10 @@ namespace Attendance.Forms
 
                         foreach (UserBioInfo emp in tmpuser)
                         {
+                            sql = "Delete from tmp_machineusers where ReqNo ='" + reqno.ToString() + "' and MachineIP ='" + ip + "' and EmpUnqID ='" + emp.UserID + "' and RFID ='" + emp.CardNumber + "'";
+                            cmd = new SqlCommand(sql, cn);
+                            cmd.ExecuteNonQuery();
+
                             sql = "Insert Into tmp_machineusers (ReqNo,MachineIP,EmpUnqID,RFID,AMthD,AddDt,AddID )" +
                             " Values ('" + reqno + "','" + ip + "','" + emp.UserID + "','" + emp.CardNumber + "','0',GetDate(),'" + Utils.User.GUserID +  "')";
 
@@ -1683,7 +1687,7 @@ namespace Attendance.Forms
 
                     if (!string.IsNullOrEmpty(cells.ToString()))
                     {
-                        txtEmpUnqID.Text = cells.Substring(0, 8).Trim();
+                        txtEmpUnqID.Text = cells;
                         txtEmpUnqID_Validated(sender, e);
                         btnAddEmp_Click(sender, e);
                     }
