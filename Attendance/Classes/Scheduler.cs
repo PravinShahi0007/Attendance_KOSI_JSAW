@@ -654,7 +654,7 @@ namespace Attendance.Classes
                                 continue;
                             }
                             err = string.Empty;
-
+                            m.SetDuplicatePunchDuration(3);
                             List<AttdLog> tempattd = new List<AttdLog>();
                             m.GetAttdRec(out tempattd, out err);
                             if (!string.IsNullOrEmpty(err))
@@ -1282,6 +1282,8 @@ namespace Attendance.Classes
                                 pro.LunchInOutProcess(tEmpUnqID, tFromDt, tToDt, out tres);
                             else if (ProType == "MESS")
                                 pro.LunchProcess(tEmpUnqID, tFromDt, tToDt, out tres);
+                            else if (ProType == "EMPCOSTCODERPT")
+                                pro.EmpCostCodeRpt_Process(tEmpUnqID, tFromDt, out tres, out err);
                             else
                                 pro.AttdProcess(tEmpUnqID, tFromDt, tToDt, out tres, out err);
 
@@ -1325,6 +1327,225 @@ namespace Attendance.Classes
                         _StatusWorker = false;
 
                     }
+                    else
+                    {
+                        //check if any pending machine operation if yes do it....
+                        #region newmachinejob
+                        sql = "Select top 10 * from MastMachineUserOperation where DoneFlg = 0 and Operation not in ('BLOCK','UNBLOCK') " +
+                            " And MachineIP not in (Select MachineIP From TRIPODReaderConFig) order by MachineIP ";
+                        DataSet ds = Utils.Helper.GetData(sql, Utils.Helper.constr);
+                        hasRows = ds.Tables.Cast<DataTable>().Any(table => table.Rows.Count != 0);
+                        if (hasRows)
+                        {
+                            foreach (DataRow dr in ds.Tables[0].Rows)
+                            {
+
+                                if (_ShutDown)
+                                {
+                                    _StatusWorker = false;
+                                    return;
+                                }
+
+                                //check once again if validity extended or not if yes then skip
+                                if (dr["Remarks"].ToString().Contains("Validity Expired") && dr["Operation"].ToString() == "DELETE")
+                                {
+                                    sql = "Select EmpUnqID,Active,WrkGrp,ValidFrom, ValidTo from MastEmp where EmpUnqID = '" + dr["EmpUnqID"].ToString() + "'";
+                                    DataSet tds = Utils.Helper.GetData(sql, Utils.Helper.constr);
+                                    hasRows = tds.Tables.Cast<DataTable>().Any(table => table.Rows.Count != 0);
+                                    if (hasRows)
+                                    {
+                                        DataRow tdr = tds.Tables[0].Rows[0];
+                                        if (Convert.ToDateTime(tdr["ValidTo"]) > Convert.ToDateTime(dr["ValidTo"]))
+                                        {
+                                            //delete from MastMachineUserOperation where EmpUnqID
+                                            using (SqlConnection cn = new SqlConnection(Utils.Helper.constr))
+                                            {
+                                                try
+                                                {
+                                                    cn.Open();
+                                                    using (SqlCommand cmd = new SqlCommand())
+                                                    {
+                                                        cmd.Connection = cn;
+                                                        sql = "Delete From MastMachineUserOperation Where DoneFlg = 0 and EmpUnqID = '" + dr["EmpUnqID"].ToString() + "'";
+                                                        cmd.CommandText = sql;
+                                                        cmd.ExecuteNonQuery();
+
+                                                    }
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    tMsg.MsgTime = DateTime.Now;
+                                                    tMsg.MsgType = "Machine Operation->";
+                                                    tMsg.Message = "Error : " + dr["Operation"].ToString() + " : EmpUnqID=>" + dr["EmpUnqID"].ToString() + "->" + dr["MachineIP"].ToString() + "->" + ex.ToString();
+                                                    Scheduler.Publish(tMsg);
+                                                }
+
+                                                continue;
+                                            }//using
+                                        }
+                                        else
+                                        {
+
+                                            DateTime CurDate = DateTime.Now;
+                                            DateTime MastValidDt = Convert.ToDateTime(tdr["ValidTo"]);
+                                            bool tActive = Convert.ToBoolean(tdr["Active"]);
+
+
+                                            //Auto deActivate Employee
+                                            if ((CurDate - MastValidDt).Days > 30 && tActive)
+                                            {
+                                                sql = "Update MastEmp Set Active = 0, LeftDate = '" + MastValidDt.ToString("yyyy-MM-dd") + "' " +
+                                                    " UpdDt = GetDate(), UpdID ='SERVER' " +
+                                                    " Where EmpUnqID ='" + tdr["EmpUnqID"].ToString() + "';";
+
+
+                                                using (SqlConnection cn = new SqlConnection(Utils.Helper.constr))
+                                                {
+                                                    try
+                                                    {
+                                                        cn.Open();
+                                                        using (SqlCommand cmd = new SqlCommand())
+                                                        {
+                                                            cmd.Connection = cn;
+                                                            cmd.CommandText = sql;
+                                                            cmd.ExecuteNonQuery();
+
+                                                        }
+                                                    }
+                                                    catch (Exception ex)
+                                                    {
+                                                        tMsg.MsgTime = DateTime.Now;
+                                                        tMsg.MsgType = "Machine Operation->";
+                                                        tMsg.Message = "Error : " + dr["Operation"].ToString() + " : EmpUnqID=>" + dr["EmpUnqID"].ToString() + "->" + dr["MachineIP"].ToString() + "->" + ex.ToString();
+                                                        Scheduler.Publish(tMsg);
+                                                    }
+                                                }//using
+
+                                            }
+                                        }
+                                    }
+
+                                }
+
+
+                                _StatusWorker = true;
+
+                                string ip = dr["MachineIP"].ToString();
+                                string err = string.Empty;
+                                clsMachine m = new clsMachine(ip, dr["IOFLG"].ToString());
+                                m.Connect(out err);
+                                if (string.IsNullOrEmpty(err))
+                                {
+
+                                    tMsg.MsgTime = DateTime.Now;
+                                    tMsg.MsgType = "Machine Operation->";
+                                    tMsg.Message = "Performing : " + dr["Operation"].ToString() + " : EmpUnqID=>" + dr["EmpUnqID"].ToString() + "->" + dr["MachineIP"].ToString();
+                                    Scheduler.Publish(tMsg);
+
+                                    m.EnableDevice(false);
+                                    #region machineoperation
+                                    switch (dr["Operation"].ToString())
+                                    {
+
+                                        case "DELETE":
+
+                                            m.DeleteUser(dr["EmpUnqID"].ToString(), out err);
+
+                                            break;
+                                        case "REGISTER":
+                                            m.Register(dr["EmpUnqID"].ToString(), out err);
+                                            break;
+                                        case "DOWNLOADTEMP":
+                                            m.DownloadTemplate(dr["EmpUnqID"].ToString(), out err);
+                                            break;
+                                        case "SETTIME":
+                                            m.SetTime(out err);
+                                            break;
+                                        default:
+                                            err = "undefined activity";
+                                            break;
+                                    }
+                                    #endregion
+
+                                    #region setsts
+                                    using (SqlConnection cn = new SqlConnection(Utils.Helper.constr))
+                                    {
+                                        try
+                                        {
+                                            cn.Open();
+                                            using (SqlCommand cmd = new SqlCommand())
+                                            {
+                                                cmd.Connection = cn;
+                                                if (string.IsNullOrEmpty(err))
+                                                {
+                                                    sql = "Update MastMachineUserOperation Set DoneFlg = 1, DoneDt = GetDate(), LastError = 'Completed' , UpdID = 'ATTDServer', " +
+                                                        " UpdDt=GetDate() where ID ='" + dr["ID"].ToString() + "' and MachineIP = '" + dr["MachineIP"].ToString() + "' and Operation = '" + dr["Operation"].ToString() + "' and EmpUnqID ='" + dr["EmpUnqID"].ToString() + "';";
+                                                }
+                                                else
+                                                {
+                                                    sql = "Update MastMachineUserOperation Set UpdDt=GetDate(), LastError = '" + err + "',UpdID = 'ATTDServer' " +
+                                                        " where ID ='" + dr["ID"].ToString() + "' and MachineIP = '" + dr["MachineIP"].ToString() + "' and Operation = '" + dr["Operation"].ToString() + "' and EmpUnqID ='" + dr["EmpUnqID"].ToString() + "';";
+                                                }
+                                                cmd.CommandText = sql;
+                                                cmd.ExecuteNonQuery();
+                                            }
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            tMsg.MsgTime = DateTime.Now;
+                                            tMsg.MsgType = "Machine Operation->";
+                                            tMsg.Message = "Error : " + dr["Operation"].ToString() + " : EmpUnqID=>" + dr["EmpUnqID"].ToString() + "->" + dr["MachineIP"].ToString() + "->" + ex.ToString();
+                                            Scheduler.Publish(tMsg);
+
+                                        }
+                                    }//using
+                                    #endregion
+
+                                    m.RefreshData();
+                                    m.EnableDevice(true);
+                                    m.DisConnect(out err);
+                                }
+                                else
+                                {
+                                    #region setsts
+                                    tMsg.MsgTime = DateTime.Now;
+                                    tMsg.MsgType = "Machine Operation->";
+                                    tMsg.Message = "Error : " + dr["Operation"].ToString() + " : EmpUnqID=>" + dr["EmpUnqID"].ToString() + "->" + dr["MachineIP"].ToString() + "->" + err.ToString();
+                                    Scheduler.Publish(tMsg);
+
+                                    //record errs
+                                    using (SqlConnection cn = new SqlConnection(Utils.Helper.constr))
+                                    {
+                                        try
+                                        {
+                                            cn.Open();
+                                            using (SqlCommand cmd = new SqlCommand())
+                                            {
+                                                cmd.Connection = cn;
+                                                sql = "Update MastMachineUserOperation Set UpdDt=GetDate(), LastError = '" + err + "' " +
+                                                    " where ID ='" + dr["ID"].ToString() + "' and MachineIP = '" + dr["MachineIP"].ToString() + "' " +
+                                                    " and Operation = '" + dr["Operation"].ToString() + "';";
+                                                cmd.CommandText = sql;
+                                                cmd.ExecuteNonQuery();
+                                            }
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            tMsg.MsgTime = DateTime.Now;
+                                            tMsg.MsgType = "Machine Operation->";
+                                            tMsg.Message = "Error : " + dr["Operation"].ToString() + " : EmpUnqID=>" + dr["EmpUnqID"].ToString() + "->" + dr["MachineIP"].ToString() + "->" + ex.ToString();
+                                            Scheduler.Publish(tMsg);
+                                        }
+                                    }//using
+                                    #endregion
+                                }
+
+                            }//foreach
+
+
+                        }
+                        #endregion
+                    }
 
                 }
                 else
@@ -1332,6 +1553,7 @@ namespace Attendance.Classes
                     _StatusWorker = false;
                    
                 }
+                _StatusWorker = false;
             }
         }
 

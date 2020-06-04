@@ -46,6 +46,7 @@
             this.mnuMessInOutMachine = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuDomainConfig = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuOtherConfig = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuConfig_KeyVal = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuUser = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuChangePass = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuLogOff = new System.Windows.Forms.ToolStripMenuItem();
@@ -75,6 +76,7 @@
             this.mnuValidityMass = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuMisConduct = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuMastException = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuEmpBulkChange = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuMess = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuMastMessGrp = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuMastFood = new System.Windows.Forms.ToolStripMenuItem();
@@ -87,6 +89,7 @@
             this.mnuCostCodeSanManPower = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuCostCodeManPowerProcess = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuCostCodeManPowerUpdate = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuBulkCostCodeSanManpower = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuTranS = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuLeave = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuLeaveEntry = new System.Windows.Forms.ToolStripMenuItem();
@@ -100,6 +103,7 @@
             this.mnuWeekoffSan = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuShiftChange = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuBulkSan = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuBulkLeavePost = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAutoMailSender = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuData = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuDataProcess = new System.Windows.Forms.ToolStripMenuItem();
@@ -119,6 +123,7 @@
             this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
             this.stsUserDesc = new System.Windows.Forms.ToolStripStatusLabel();
             this.stsExtra = new System.Windows.Forms.ToolStripStatusLabel();
+            this.mnuPunchingBlock = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -148,7 +153,8 @@
             this.mnuUserRights,
             this.mnuConfig,
             this.mnuDomainConfig,
-            this.mnuOtherConfig});
+            this.mnuOtherConfig,
+            this.mnuConfig_KeyVal});
             this.mnuAdmin.Name = "mnuAdmin";
             this.mnuAdmin.Size = new System.Drawing.Size(55, 20);
             this.mnuAdmin.Text = "&Admin";
@@ -276,6 +282,13 @@
             this.mnuOtherConfig.Text = "Other Config";
             this.mnuOtherConfig.Click += new System.EventHandler(this.mnuOtherConfig_Click);
             // 
+            // mnuConfig_KeyVal
+            // 
+            this.mnuConfig_KeyVal.Name = "mnuConfig_KeyVal";
+            this.mnuConfig_KeyVal.Size = new System.Drawing.Size(193, 22);
+            this.mnuConfig_KeyVal.Text = "Config Keys";
+            this.mnuConfig_KeyVal.Click += new System.EventHandler(this.mnuConfig_KeyVal_Click);
+            // 
             // mnuUser
             // 
             this.mnuUser.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -307,7 +320,8 @@
             this.mnuUserEmpRights,
             this.mnuProfile,
             this.mnuEmployee,
-            this.mnuMess});
+            this.mnuMess,
+            this.mnuPunchingBlock});
             this.mnuMast.Name = "mnuMast";
             this.mnuMast.Size = new System.Drawing.Size(60, 20);
             this.mnuMast.Text = "&Masters";
@@ -315,21 +329,21 @@
             // mnuUserSpRights
             // 
             this.mnuUserSpRights.Name = "mnuUserSpRights";
-            this.mnuUserSpRights.Size = new System.Drawing.Size(205, 22);
+            this.mnuUserSpRights.Size = new System.Drawing.Size(209, 22);
             this.mnuUserSpRights.Text = "User WorkGrp Rights";
             this.mnuUserSpRights.Click += new System.EventHandler(this.mnuUserSpRights_Click);
             // 
             // mnuUserDSRights
             // 
             this.mnuUserDSRights.Name = "mnuUserDSRights";
-            this.mnuUserDSRights.Size = new System.Drawing.Size(205, 22);
+            this.mnuUserDSRights.Size = new System.Drawing.Size(209, 22);
             this.mnuUserDSRights.Text = "User Dept/Section Rights";
             this.mnuUserDSRights.Click += new System.EventHandler(this.mnuUserDSRights_Click);
             // 
             // mnuUserEmpRights
             // 
             this.mnuUserEmpRights.Name = "mnuUserEmpRights";
-            this.mnuUserEmpRights.Size = new System.Drawing.Size(205, 22);
+            this.mnuUserEmpRights.Size = new System.Drawing.Size(209, 22);
             this.mnuUserEmpRights.Text = "User Emp Rights";
             this.mnuUserEmpRights.Click += new System.EventHandler(this.mnuUserEmpRights_Click);
             // 
@@ -350,7 +364,7 @@
             this.mnuCreateMuster,
             this.mnuMastRules});
             this.mnuProfile.Name = "mnuProfile";
-            this.mnuProfile.Size = new System.Drawing.Size(205, 22);
+            this.mnuProfile.Size = new System.Drawing.Size(209, 22);
             this.mnuProfile.Text = "Profile Master";
             // 
             // mnuMastEmpType
@@ -453,59 +467,67 @@
             this.mnuImportEmp,
             this.mnuValidityMass,
             this.mnuMisConduct,
-            this.mnuMastException});
+            this.mnuMastException,
+            this.mnuEmpBulkChange});
             this.mnuEmployee.Name = "mnuEmployee";
-            this.mnuEmployee.Size = new System.Drawing.Size(205, 22);
+            this.mnuEmployee.Size = new System.Drawing.Size(209, 22);
             this.mnuEmployee.Text = "Employee";
             // 
             // mnuMastEmp
             // 
             this.mnuMastEmp.Name = "mnuMastEmp";
-            this.mnuMastEmp.Size = new System.Drawing.Size(184, 22);
+            this.mnuMastEmp.Size = new System.Drawing.Size(196, 22);
             this.mnuMastEmp.Text = "Employee Master";
             this.mnuMastEmp.Click += new System.EventHandler(this.mnuMastEmp_Click);
             // 
             // mnuMastEmpPer
             // 
             this.mnuMastEmpPer.Name = "mnuMastEmpPer";
-            this.mnuMastEmpPer.Size = new System.Drawing.Size(184, 22);
+            this.mnuMastEmpPer.Size = new System.Drawing.Size(196, 22);
             this.mnuMastEmpPer.Text = "Personal Info";
             this.mnuMastEmpPer.Click += new System.EventHandler(this.mnuMastEmpPer_Click);
             // 
             // mnuMastJob
             // 
             this.mnuMastJob.Name = "mnuMastJob";
-            this.mnuMastJob.Size = new System.Drawing.Size(184, 22);
+            this.mnuMastJob.Size = new System.Drawing.Size(196, 22);
             this.mnuMastJob.Text = "Job Profile";
             this.mnuMastJob.Click += new System.EventHandler(this.mnuMastJob_Click);
             // 
             // mnuImportEmp
             // 
             this.mnuImportEmp.Name = "mnuImportEmp";
-            this.mnuImportEmp.Size = new System.Drawing.Size(184, 22);
+            this.mnuImportEmp.Size = new System.Drawing.Size(196, 22);
             this.mnuImportEmp.Text = "Import Employee";
             this.mnuImportEmp.Click += new System.EventHandler(this.mnuImportEmp_Click);
             // 
             // mnuValidityMass
             // 
             this.mnuValidityMass.Name = "mnuValidityMass";
-            this.mnuValidityMass.Size = new System.Drawing.Size(184, 22);
+            this.mnuValidityMass.Size = new System.Drawing.Size(196, 22);
             this.mnuValidityMass.Text = "Mass Validity Update";
             this.mnuValidityMass.Click += new System.EventHandler(this.mnuValidityMass_Click);
             // 
             // mnuMisConduct
             // 
             this.mnuMisConduct.Name = "mnuMisConduct";
-            this.mnuMisConduct.Size = new System.Drawing.Size(184, 22);
+            this.mnuMisConduct.Size = new System.Drawing.Size(196, 22);
             this.mnuMisConduct.Text = "MisConduct Register";
             this.mnuMisConduct.Click += new System.EventHandler(this.mnuMisConduct_Click);
             // 
             // mnuMastException
             // 
             this.mnuMastException.Name = "mnuMastException";
-            this.mnuMastException.Size = new System.Drawing.Size(184, 22);
+            this.mnuMastException.Size = new System.Drawing.Size(196, 22);
             this.mnuMastException.Text = "Exception Master";
             this.mnuMastException.Click += new System.EventHandler(this.mnuMastException_Click);
+            // 
+            // mnuEmpBulkChange
+            // 
+            this.mnuEmpBulkChange.Name = "mnuEmpBulkChange";
+            this.mnuEmpBulkChange.Size = new System.Drawing.Size(196, 22);
+            this.mnuEmpBulkChange.Text = "Bulk Employee Change";
+            this.mnuEmpBulkChange.Click += new System.EventHandler(this.mnuEmpBulkChange_Click);
             // 
             // mnuMess
             // 
@@ -515,7 +537,7 @@
             this.mnuMastTime,
             this.mnuMastRate});
             this.mnuMess.Name = "mnuMess";
-            this.mnuMess.Size = new System.Drawing.Size(205, 22);
+            this.mnuMess.Size = new System.Drawing.Size(209, 22);
             this.mnuMess.Text = "Mess";
             // 
             // mnuMastMessGrp
@@ -554,7 +576,8 @@
             this.mnuEmpCostCodeBulk,
             this.mnuCostCodeSanManPower,
             this.mnuCostCodeManPowerProcess,
-            this.mnuCostCodeManPowerUpdate});
+            this.mnuCostCodeManPowerUpdate,
+            this.mnuBulkCostCodeSanManpower});
             this.mnuCostCent.Name = "mnuCostCent";
             this.mnuCostCent.Size = new System.Drawing.Size(83, 20);
             this.mnuCostCent.Text = "&CostCenters";
@@ -562,43 +585,50 @@
             // mnuCostCodeMast
             // 
             this.mnuCostCodeMast.Name = "mnuCostCodeMast";
-            this.mnuCostCodeMast.Size = new System.Drawing.Size(289, 22);
+            this.mnuCostCodeMast.Size = new System.Drawing.Size(319, 22);
             this.mnuCostCodeMast.Text = "Cost Center Master";
             this.mnuCostCodeMast.Click += new System.EventHandler(this.mnuCostCodeMast_Click);
             // 
             // mnuEmpCostCode
             // 
             this.mnuEmpCostCode.Name = "mnuEmpCostCode";
-            this.mnuEmpCostCode.Size = new System.Drawing.Size(289, 22);
+            this.mnuEmpCostCode.Size = new System.Drawing.Size(319, 22);
             this.mnuEmpCostCode.Text = "Update Employee CostCode";
             this.mnuEmpCostCode.Click += new System.EventHandler(this.mnuEmpCostCode_Click);
             // 
             // mnuEmpCostCodeBulk
             // 
             this.mnuEmpCostCodeBulk.Name = "mnuEmpCostCodeBulk";
-            this.mnuEmpCostCodeBulk.Size = new System.Drawing.Size(289, 22);
+            this.mnuEmpCostCodeBulk.Size = new System.Drawing.Size(319, 22);
             this.mnuEmpCostCodeBulk.Text = "Bulk Update Employee CostCode";
             this.mnuEmpCostCodeBulk.Click += new System.EventHandler(this.mnuEmpCostCodeBulk_Click);
             // 
             // mnuCostCodeSanManPower
             // 
             this.mnuCostCodeSanManPower.Name = "mnuCostCodeSanManPower";
-            this.mnuCostCodeSanManPower.Size = new System.Drawing.Size(289, 22);
+            this.mnuCostCodeSanManPower.Size = new System.Drawing.Size(319, 22);
             this.mnuCostCodeSanManPower.Text = "CostCenter wise Sanc. Manpower Master";
             this.mnuCostCodeSanManPower.Click += new System.EventHandler(this.mnuCostCodeSanManPower_Click);
             // 
             // mnuCostCodeManPowerProcess
             // 
             this.mnuCostCodeManPowerProcess.Name = "mnuCostCodeManPowerProcess";
-            this.mnuCostCodeManPowerProcess.Size = new System.Drawing.Size(289, 22);
+            this.mnuCostCodeManPowerProcess.Size = new System.Drawing.Size(319, 22);
             this.mnuCostCodeManPowerProcess.Text = "CostCenter Manpower Report Process";
             this.mnuCostCodeManPowerProcess.Click += new System.EventHandler(this.mnuCostCodeManPowerProcess_Click);
             // 
             // mnuCostCodeManPowerUpdate
             // 
             this.mnuCostCodeManPowerUpdate.Name = "mnuCostCodeManPowerUpdate";
-            this.mnuCostCodeManPowerUpdate.Size = new System.Drawing.Size(289, 22);
+            this.mnuCostCodeManPowerUpdate.Size = new System.Drawing.Size(319, 22);
             this.mnuCostCodeManPowerUpdate.Text = "CostCenter Manpower Report Update";
+            // 
+            // mnuBulkCostCodeSanManpower
+            // 
+            this.mnuBulkCostCodeSanManpower.Name = "mnuBulkCostCodeSanManpower";
+            this.mnuBulkCostCodeSanManpower.Size = new System.Drawing.Size(319, 22);
+            this.mnuBulkCostCodeSanManpower.Text = "Bulk Update CostCenter Wise Sanc. Manpower";
+            this.mnuBulkCostCodeSanManpower.Click += new System.EventHandler(this.mnuBulkCostCodeSanManpower_Click);
             // 
             // mnuTranS
             // 
@@ -619,7 +649,7 @@
             this.mnuLeaveBalEntry,
             this.mnuLeaveEntryLunch});
             this.mnuLeave.Name = "mnuLeave";
-            this.mnuLeave.Size = new System.Drawing.Size(136, 22);
+            this.mnuLeave.Size = new System.Drawing.Size(152, 22);
             this.mnuLeave.Text = "Leave";
             // 
             // mnuLeaveEntry
@@ -655,7 +685,7 @@
             this.mnuShift.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuShiftSchUpload});
             this.mnuShift.Name = "mnuShift";
-            this.mnuShift.Size = new System.Drawing.Size(136, 22);
+            this.mnuShift.Size = new System.Drawing.Size(152, 22);
             this.mnuShift.Text = "Shift";
             // 
             // mnuShiftSchUpload
@@ -671,43 +701,50 @@
             this.mnuManualSan,
             this.mnuWeekoffSan,
             this.mnuShiftChange,
-            this.mnuBulkSan});
+            this.mnuBulkSan,
+            this.mnuBulkLeavePost});
             this.mnuSanction.Name = "mnuSanction";
-            this.mnuSanction.Size = new System.Drawing.Size(136, 22);
+            this.mnuSanction.Size = new System.Drawing.Size(152, 22);
             this.mnuSanction.Text = "Sanction";
             // 
             // mnuManualSan
             // 
             this.mnuManualSan.Name = "mnuManualSan";
-            this.mnuManualSan.Size = new System.Drawing.Size(163, 22);
+            this.mnuManualSan.Size = new System.Drawing.Size(173, 22);
             this.mnuManualSan.Text = "Manual Sanction";
             this.mnuManualSan.Click += new System.EventHandler(this.mnuManualSan_Click);
             // 
             // mnuWeekoffSan
             // 
             this.mnuWeekoffSan.Name = "mnuWeekoffSan";
-            this.mnuWeekoffSan.Size = new System.Drawing.Size(163, 22);
+            this.mnuWeekoffSan.Size = new System.Drawing.Size(173, 22);
             this.mnuWeekoffSan.Text = "Weekoff Change";
             this.mnuWeekoffSan.Click += new System.EventHandler(this.mnuWeekoffSan_Click);
             // 
             // mnuShiftChange
             // 
             this.mnuShiftChange.Name = "mnuShiftChange";
-            this.mnuShiftChange.Size = new System.Drawing.Size(163, 22);
+            this.mnuShiftChange.Size = new System.Drawing.Size(173, 22);
             this.mnuShiftChange.Text = "Shift Change";
             this.mnuShiftChange.Click += new System.EventHandler(this.mnuShiftChange_Click);
             // 
             // mnuBulkSan
             // 
             this.mnuBulkSan.Name = "mnuBulkSan";
-            this.mnuBulkSan.Size = new System.Drawing.Size(163, 22);
+            this.mnuBulkSan.Size = new System.Drawing.Size(173, 22);
             this.mnuBulkSan.Text = "Bulk Sanction";
             this.mnuBulkSan.Click += new System.EventHandler(this.mnuBulkSan_Click);
+            // 
+            // mnuBulkLeavePost
+            // 
+            this.mnuBulkLeavePost.Name = "mnuBulkLeavePost";
+            this.mnuBulkLeavePost.Size = new System.Drawing.Size(173, 22);
+            this.mnuBulkLeavePost.Text = "Bulk Leave Posting";
             // 
             // mnuAutoMailSender
             // 
             this.mnuAutoMailSender.Name = "mnuAutoMailSender";
-            this.mnuAutoMailSender.Size = new System.Drawing.Size(136, 22);
+            this.mnuAutoMailSender.Size = new System.Drawing.Size(152, 22);
             this.mnuAutoMailSender.Text = "Mail Sender";
             this.mnuAutoMailSender.Click += new System.EventHandler(this.mnuAutoMailSender_Click);
             // 
@@ -847,6 +884,13 @@
             this.stsExtra.Name = "stsExtra";
             this.stsExtra.Size = new System.Drawing.Size(0, 17);
             // 
+            // mnuPunchingBlock
+            // 
+            this.mnuPunchingBlock.Name = "mnuPunchingBlock";
+            this.mnuPunchingBlock.Size = new System.Drawing.Size(209, 22);
+            this.mnuPunchingBlock.Text = "Punching  Block/UnBlock";
+            this.mnuPunchingBlock.Click += new System.EventHandler(this.mnuPunchingBlock_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -963,6 +1007,11 @@
         private System.Windows.Forms.ToolStripMenuItem mnuMastHolidayOpt;
         private System.Windows.Forms.ToolStripMenuItem mnuMastException;
         private System.Windows.Forms.ToolStripMenuItem mnuCopyWrkGrpToOther;
+        private System.Windows.Forms.ToolStripMenuItem mnuConfig_KeyVal;
+        private System.Windows.Forms.ToolStripMenuItem mnuEmpBulkChange;
+        private System.Windows.Forms.ToolStripMenuItem mnuBulkCostCodeSanManpower;
+        private System.Windows.Forms.ToolStripMenuItem mnuBulkLeavePost;
+        private System.Windows.Forms.ToolStripMenuItem mnuPunchingBlock;
 
 
     }

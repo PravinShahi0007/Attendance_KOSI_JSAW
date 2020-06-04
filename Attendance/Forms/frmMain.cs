@@ -1116,6 +1116,52 @@ namespace Attendance
                 m.Show();
             }
         }
+
+        private void mnuConfig_KeyVal_Click(object sender, EventArgs e)
+        {
+            Form t = Application.OpenForms["frmMastConfigKeys"];
+            if (t == null)
+            {
+                Attendance.Forms.frmMastConfigKeys m = new Attendance.Forms.frmMastConfigKeys();
+                m.MdiParent = this;
+                m.Show();
+            }
+        }
+
+        private void mnuEmpBulkChange_Click(object sender, EventArgs e)
+        {
+            Form t = Application.OpenForms["frmMastEmpBulkChange"];
+
+            if (t == null)
+            {
+                Attendance.Forms.frmMastEmpBulkChange m = new Attendance.Forms.frmMastEmpBulkChange();
+                m.MdiParent = this;
+                m.Show();
+            }
+        }
+
+        private void mnuBulkCostCodeSanManpower_Click(object sender, EventArgs e)
+        {
+            Form t = Application.OpenForms["frmBulkCostCodeSanManPower"];
+            if (t == null)
+            {
+                Attendance.Forms.frmBulkCostCodeSanManPower m = new Attendance.Forms.frmBulkCostCodeSanManPower();
+                m.MdiParent = this;
+                m.Show();
+            }
+        }
+
+        private void mnuPunchingBlock_Click(object sender, EventArgs e)
+        {
+            Form t = Application.OpenForms["frmMastEmpBlockPunching"];
+
+            if (t == null)
+            {
+                Attendance.Forms.frmMastEmpBlockPunching m = new Attendance.Forms.frmMastEmpBlockPunching();
+                m.MdiParent = this;
+                m.Show();
+            }
+        }
         
 
     }

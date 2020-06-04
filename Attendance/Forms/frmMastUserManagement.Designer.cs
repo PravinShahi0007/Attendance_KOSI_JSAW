@@ -140,6 +140,7 @@
             this.grpButtons11 = new System.Windows.Forms.GroupBox();
             this.grd_Upload = new DevExpress.XtraGrid.GridControl();
             this.gv_Upload = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.btnDevInfo = new DevExpress.XtraEditors.SimpleButton();
             this.tblp.SuspendLayout();
             this.grpButtons12.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cmbListMachine1.Properties)).BeginInit();
@@ -764,6 +765,7 @@
             // grpButtons2
             // 
             this.grpButtons2.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.grpButtons2.Controls.Add(this.btnDevInfo);
             this.grpButtons2.Controls.Add(this.btnSetTime);
             this.grpButtons2.Controls.Add(this.btnUnlock);
             this.grpButtons2.Controls.Add(this.btnUnlockMaster);
@@ -1647,6 +1649,17 @@
             this.gv_Upload.OptionsView.ShowGroupExpandCollapseButtons = false;
             this.gv_Upload.OptionsView.ShowGroupPanel = false;
             // 
+            // btnDevInfo
+            // 
+            this.btnDevInfo.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDevInfo.Appearance.Options.UseFont = true;
+            this.btnDevInfo.Location = new System.Drawing.Point(533, 10);
+            this.btnDevInfo.Name = "btnDevInfo";
+            this.btnDevInfo.Size = new System.Drawing.Size(111, 27);
+            this.btnDevInfo.TabIndex = 14;
+            this.btnDevInfo.Text = "Device Info";
+            this.btnDevInfo.Click += new System.EventHandler(this.btnDevInfo_Click);
+            // 
             // frmMastUserManagement
             // 
             this.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -1842,5 +1855,6 @@
         public DevExpress.XtraEditors.TextEdit txtIPAddSrc;
         private System.Windows.Forms.Button btnBulkDelete;
         private DevExpress.XtraEditors.SimpleButton btnSetTime;
+        private DevExpress.XtraEditors.SimpleButton btnDevInfo;
     }
 }

@@ -201,6 +201,182 @@ namespace Attendance.Classes
             }
         }
 
+        public bool GetDataFile(int DataFlag, string FileName, out string err)
+        {
+            err = string.Empty;
+            bool ret = false;
+            if (!this._connected)
+            {
+                err = "Machine is not connected";
+                return ret;
+            }
+
+            ret = this.CZKEM1.GetDataFile(this.CZKEM1.MachineNumber, DataFlag, FileName);
+            return ret;
+
+        }
+
+        public bool ReadDataFile(int DataFlag, string FileName, string FilePath, out string err)
+        {
+            err = string.Empty;
+            bool ret = false;
+            if (!this._connected)
+            {
+                err = "Machine is not connected";
+                return ret;
+            }
+            //pending
+            ret = this.CZKEM1.ReadFile(this.CZKEM1.MachineNumber, FileName, FilePath);
+            return ret;
+        }
+
+        public bool GetSDKVersion(out string version, out string err)
+        {
+            err = string.Empty;
+            version = string.Empty;
+            bool ret = false;
+            if (!this._connected)
+            {
+                err = "Machine is not connected";
+                return ret;
+            }
+
+            ret = this.CZKEM1.GetSDKVersion(ref version);
+            return ret;
+        }
+
+        public bool GetSerialNumber(out string strSerialNo, out string err)
+        {
+            err = string.Empty;
+            strSerialNo = string.Empty;
+            bool ret = false;
+            if (!this._connected)
+            {
+                err = "Machine is not connected";
+                return ret;
+            }
+
+            ret = this.CZKEM1.GetSerialNumber(this.CZKEM1.MachineNumber, out strSerialNo);
+            return ret;
+        }
+
+        public bool GetFirmwareVersion(out string strFirmwarever, out string err)
+        {
+            err = string.Empty;
+            strFirmwarever = string.Empty;
+            bool ret = false;
+            if (!this._connected)
+            {
+                err = "Machine is not connected";
+                return ret;
+            }
+
+            ret = this.CZKEM1.GetFirmwareVersion(this.CZKEM1.MachineNumber, ref strFirmwarever);
+            return ret;
+        }
+
+        public bool GetDeviceMAC(out string strmacadd, out string err)
+        {
+            err = string.Empty;
+            strmacadd = string.Empty;
+            bool ret = false;
+            if (!this._connected)
+            {
+                err = "Machine is not connected";
+                return ret;
+            }
+
+            ret = this.CZKEM1.GetDeviceMAC(this.CZKEM1.MachineNumber, ref strmacadd);
+            return ret;
+        }
+
+        public bool GetPlatform(out string strplatform, out string err)
+        {
+            err = string.Empty;
+            strplatform = string.Empty;
+            bool ret = false;
+            if (!this._connected)
+            {
+                err = "Machine is not connected";
+                return ret;
+            }
+
+            ret = this.CZKEM1.GetPlatform(this.CZKEM1.MachineNumber, ref strplatform);
+            return ret;
+        }
+
+
+        public bool SaveDeviceData(out string err)
+        {
+
+            bool ret = false;
+            if (!this._connected)
+            {
+                err = "Machine is not connected";
+                return ret;
+            }
+
+
+            string sdkversion = "";
+            string serialno = "";
+            string firmwarever = "";
+            string platform = "";
+            string macadd = "";
+
+            int UserCapacity = 0;
+            int RegisteredUsers = 0;
+            int FaceCapacity = 0;
+            int RegisteredFace = 0;
+            int FingerCapacity = 0;
+            int RegisteredFinger = 0;
+
+            this.GetSDKVersion(out sdkversion, out err);
+            this.GetSerialNumber(out serialno, out err);
+            this.GetFirmwareVersion(out firmwarever, out err);
+            this.GetPlatform(out platform, out err);
+            this.GetDeviceMAC(out macadd, out err);
+            this.Get_StatusInfo_Users(out RegisteredUsers, out UserCapacity, out err);
+            this.Get_StatusInfo_Face(out RegisteredFace, out FaceCapacity, out err);
+            this.Get_StatusInfo_Finger(out RegisteredFinger, out FingerCapacity, out err);
+
+            using (SqlConnection cn = new SqlConnection(Utils.Helper.constr))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    try
+                    {
+                        cn.Open();
+                        string sql = "Update ReaderConfig set FirmwareVer ='" + firmwarever + "'," +
+                            " SdkVer ='" + sdkversion + "', SerialNo ='" + serialno + "',Platform ='" + platform + "'," +
+                            " MacAdd ='" + macadd + "'," +
+                            " UserCapacity = '" + UserCapacity.ToString() + "'," +
+                            " RegisteredUsers ='" + RegisteredUsers.ToString() + "'," +
+                            " FaceCapacity='" + FaceCapacity.ToString() + "'," +
+                            " RegisteredFace ='" + RegisteredFace.ToString() + "'," +
+                            " FingerCapacity='" + FingerCapacity.ToString() + "'," +
+                            " RegisteredFinger='" + RegisteredFinger.ToString() + "'," +
+                            " DeviceInfoUpdDt ='" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "'" +
+                            " Where MachineIP ='" + this._ip + "'";
+
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Connection = cn;
+                        cmd.CommandText = sql;
+                        cmd.ExecuteNonQuery();
+                        err = "";
+                        return true;
+
+                    }
+                    catch (Exception ex)
+                    {
+                        err = ex.Message.ToString();
+                        return false;
+                    }
+                }
+            }
+
+        }
+
+
         public void DisConnect (out string err)
         {
             err = string.Empty;
@@ -525,6 +701,74 @@ namespace Attendance.Classes
 
             bool t = CZKEM1.RestartDevice(_machineno);
             
+        }
+
+        public bool LockMachine(out string err)
+        {
+            err = string.Empty;
+            bool result = false;
+            if (!_connected)
+            {
+                err = "Machine not connected..";
+                return result;
+            }
+            //generate new random password
+            Random generator = new Random();
+            int r = generator.Next(100000, 999999);
+
+            try
+            {
+                using (SqlConnection cn = new SqlConnection(Utils.Helper.constr))
+                {
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cn.Open();
+                        string sql = "Update ReaderConfig Set MachinePW ='" + r.ToString() + "' Where MachineIP ='" + _ip + "'";
+                        cmd.Connection = cn;
+                        cmd.CommandType = CommandType.Text;
+                        cmd.CommandText = sql;
+                        cmd.ExecuteNonQuery();
+
+                        bool t = CZKEM1.ClearAdministrators(_machineno);
+                        if (!_istft)
+                        {
+                            result = this.CZKEM1.SetUserInfo(_machineno, 1234, "Admin", r.ToString(), 3, true);
+
+                        }
+                        else
+                        {
+                            result = this.CZKEM1.SSR_SetUserInfo(_machineno, "1234", "Admin", r.ToString(), 3, true);
+                            this.CZKEM1.SetUserInfoEx(_machineno, 1234, 131, 0);
+                        }
+
+
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result = false;
+            }
+
+            return result;
+        }
+
+        public bool SetDuplicatePunchDuration(int nosofminutes)
+        {
+            bool result = false;
+            if (!_messflg)
+            {
+                //// get duplicate punch time from machine
+                int duptime = 0;
+                result = this.CZKEM1.GetDeviceInfo(_machineno, 8, ref duptime);
+
+                if (result)
+                {
+                    result = this.CZKEM1.SetDeviceInfo(_machineno, 8, 3);
+                }
+            }
+            return result;
         }
 
         /// <summary>
@@ -1162,6 +1406,185 @@ namespace Attendance.Classes
 
         }
 
+        public void DownloadAllUsers_Photos(out string err)
+        {
+            err = string.Empty;
+
+
+            if (!_connected)
+            {
+                err = "Machine not connected..";
+                return;
+            }
+
+            int _prev = 0, _machineno = 0;
+            string sUserID, sName, sPassword;
+            bool bEnabled = false;
+            bool vRet = this.CZKEM1.ReadAllUserID(_machineno); // 'read all the user information to the memory
+            if (!vRet)
+            {
+                err = "Error : Can not read All UserID";
+                return;
+            }
+
+            bool istft = this.CZKEM1.IsTFTMachine(_machineno);
+
+            if (istft)
+            {
+                while (this.CZKEM1.SSR_GetAllUserInfo(_machineno, out sUserID, out sName, out sPassword, out _prev, out bEnabled))
+                {
+                    vRet = CZKEM1.ReadFile(_machineno, "104019" + ".jpg", "/mnt/mtdblock/");
+                    if (vRet)
+                    {
+                        //dont know how to use
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                err = "unable to download...";
+                return;
+            }
+        }
+
+        public void DownloadAllUsers_QuickReport(out string err, out List<UserBioInfo> tUsers)
+        {
+            err = string.Empty;
+            tUsers = new List<UserBioInfo>();
+
+            if (!_connected)
+            {
+                err = "Machine not connected..";
+                return;
+            }
+
+            int _prev = 0, _useridInt = 0, _bkpno = 0, _isenable = 0, _machineno = 0;
+            string sUserID, sName, sPassword, sCardNumber;
+            bool bEnabled = false;
+            bool vRet = this.CZKEM1.ReadAllUserID(_machineno); // 'read all the user information to the memory
+            if (!vRet)
+            {
+                err = "Error : Can not read All UserID";
+                return;
+            }
+
+            bool istft = this.CZKEM1.IsTFTMachine(_machineno);
+
+            if (istft)
+            {
+                while (this.CZKEM1.SSR_GetAllUserInfo(_machineno, out sUserID, out sName, out sPassword, out _prev, out bEnabled))
+                {
+                    vRet = CZKEM1.GetStrCardNumber(out sCardNumber);
+
+                    UserBioInfo t = new UserBioInfo();
+                    t.UserID = sUserID;
+                    t.UserName = sName;
+                    t.CardNumber = sCardNumber;
+                    t.Previlege = _prev;
+                    t.Enabled = bEnabled;
+                    tUsers.Add(t);
+                }
+            }
+            else
+            {
+                while (this.CZKEM1.GetAllUserID(_machineno, ref _useridInt, ref _machineno, ref _bkpno, ref _prev, ref _isenable))
+                {
+                    UserBioInfo t = new UserBioInfo();
+                    vRet = CZKEM1.GetStrCardNumber(out sCardNumber);
+
+                    t.UserID = Convert.ToString(_useridInt);
+                    t.Previlege = _prev;
+                    t.CardNumber = sCardNumber;
+                    t.Enabled = (_isenable == 1 ? true : false);
+                    tUsers.Add(t);
+                }
+            }
+
+        }
+
+        public void Get_StatusInfo_Users(out int usercount, out int usercapacity, out string err)
+        {
+            err = string.Empty;
+            usercount = 0;
+            usercapacity = 0;
+
+            if (!_connected)
+            {
+                err = "Machine not connected..";
+                return;
+            }
+            bool istft = this.CZKEM1.IsTFTMachine(_machineno);
+            this.CZKEM1.GetDeviceStatus(_machineno, 2, ref usercount);
+            this.CZKEM1.GetDeviceStatus(_machineno, 8, ref usercapacity);
+        }
+
+        public void Get_StatusInfo_Face(out int facecount, out int facecapacity, out string err)
+        {
+            err = string.Empty;
+            facecount = 0;
+            facecapacity = 0;
+
+            if (!_connected)
+            {
+                err = "Machine not connected..";
+                return;
+            }
+            bool istft = this.CZKEM1.IsTFTMachine(_machineno);
+
+            if (istft)
+            {
+                this.CZKEM1.GetDeviceStatus(_machineno, 21, ref facecount);
+                this.CZKEM1.GetDeviceStatus(_machineno, 22, ref facecapacity);
+            }
+
+        }
+
+        public void Get_StatusInfo_Finger(out int fingercount, out int fingercapacity, out string err)
+        {
+            err = string.Empty;
+            fingercount = 0;
+            fingercapacity = 0;
+
+            if (!_connected)
+            {
+                err = "Machine not connected..";
+                return;
+            }
+            bool istft = this.CZKEM1.IsTFTMachine(_machineno);
+
+            if (istft)
+            {
+                this.CZKEM1.GetDeviceStatus(_machineno, 3, ref fingercount);
+                this.CZKEM1.GetDeviceStatus(_machineno, 7, ref fingercapacity);
+            }
+
+        }
+
+        public bool Set_MachineIP(string currentip, string newip, out string err)
+        {
+            err = string.Empty;
+            bool result = false;
+
+
+            if (!_connected)
+            {
+                err = "Machine not connected..";
+                return false;
+            }
+            bool istft = this.CZKEM1.IsTFTMachine(_machineno);
+
+            if (istft)
+            {
+                result = this.CZKEM1.SetDeviceIP(_machineno, newip);
+            }
+
+            return result;
+        }
+                
         /// <summary>
         /// this function help to download bio details from machine and store to master data
         /// </summary>
@@ -2244,7 +2667,7 @@ namespace Attendance.Classes
             try
             {
                 Ping myPing = new Ping();
-                PingReply reply = myPing.Send(_ip, 2000);
+                PingReply reply = myPing.Send(_ip, 5000);
 
                 if (reply.Status == IPStatus.Success)
                 {
@@ -2429,5 +2852,117 @@ namespace Attendance.Classes
 
         }
 
+        public void DeleteAllUser(out string err)
+        {
+            err = string.Empty;
+
+
+            if (!_connected)
+            {
+                err = "Machine not connected..";
+                return;
+            }
+
+            bool vRet = this.CZKEM1.ReadAllUserID(_machineno); // 'read all the user information to the memory
+            if (!vRet)
+            {
+                err = "Error : Can not read All UserID";
+                return;
+            }
+
+            string _userid, _username, _password, _cardno;
+            int _prev, _useridInt;
+            bool _enabled = false;
+
+            this.CZKEM1.EnableDevice(_machineno, false);
+
+            _userid = string.Empty; _username = string.Empty; _password = string.Empty; _cardno = string.Empty;
+            _useridInt = 0; _prev = 0; _enabled = false;
+
+            List<UserBioInfo> tUserList = new List<UserBioInfo>();
+
+            if (_istft)
+            {
+                while (this.CZKEM1.SSR_GetAllUserInfo(_machineno, out _userid, out _username, out _password, out _prev, out _enabled))
+                {
+                    UserBioInfo t = new UserBioInfo();
+                    t.UserID = _userid;
+                    t.Previlege = _prev;
+                    t.Enabled = _enabled;
+                    tUserList.Add(t);
+
+                }//end while
+
+                foreach (UserBioInfo t in tUserList)
+                {
+                    this.CZKEM1.SSR_DeleteEnrollDataExt(_machineno, t.UserID, 12);
+                    this.CZKEM1.DelUserFace(_machineno, t.UserID, 50);
+                }
+
+            }//end if new machine
+            else
+            {
+                //old machines
+                while (this.CZKEM1.GetAllUserInfo(_machineno, ref _useridInt, ref _username, ref _password, ref _prev, ref _enabled))
+                {
+                    UserBioInfo t = new UserBioInfo();
+                    t.UserID = _useridInt.ToString();
+                    t.Previlege = _prev;
+                    t.Enabled = _enabled;
+                    tUserList.Add(t);
+                }
+
+                foreach (UserBioInfo t in tUserList)
+                {
+                    this.CZKEM1.DeleteEnrollData(_machineno, Convert.ToInt32(t.UserID), _machineno, 0);
+                }
+            }
+            this.CZKEM1.EnableDevice(_machineno, false);
+            this.RefreshData();
+
+
+        }
+
+        public void ClearALLUserData(out string err)
+        {
+            err = string.Empty;
+
+
+            if (!_connected)
+            {
+                err = "Machine not connected..";
+                return;
+            }
+
+            bool vRet = this.CZKEM1.ClearData(_machineno, 5); // 'read all the user information to the memory
+
+            if (_istft)
+                vRet = this.CZKEM1.ClearData(_machineno, 2);
+
+            if (!vRet)
+            {
+                err = "Error : Can not Delete All Users....";
+                return;
+            }
+
+        }
+
+        public bool SetUserGroup(int Userid, int usergroup, out string err)
+        {
+            err = string.Empty;
+            bool res = false;
+
+            if (!_connected)
+            {
+                err = "Machine not connected..";
+                return res;
+            }
+
+
+            res = this.CZKEM1.SetUserInfoEx(1, Userid, 0, new byte());
+            res = this.CZKEM1.SetUserGroup(1, Userid, usergroup);
+
+            return res;
+        }
     }
 }
