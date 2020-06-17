@@ -17,6 +17,7 @@ using System.IO;
 using System.Net;
 using ConnectUNCWithCredentials;
 using System.Reflection;
+using System.Diagnostics;
 
 namespace Attendance
 {
@@ -83,6 +84,7 @@ namespace Attendance
             mnuData.Enabled = true;
             mnuCostCent.Enabled = true;
             mnuChangePass.Enabled = true;
+            mnuReports.Enabled = true;
             mnuLogOff.Enabled = true;
 
             DataSet ds = new DataSet();
@@ -1039,7 +1041,7 @@ namespace Attendance
         private void mnuAbout_Click(object sender, EventArgs e)
         {
             string msg = "Attedance System" + Environment.NewLine +
-                "Version 2.1 " + Environment.NewLine +
+                "Version 2.2 " + Environment.NewLine +
                 "Design & Devloped By : Anand Achraya " + Environment.NewLine;
 
             MessageBox.Show(msg, "About", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -1160,6 +1162,24 @@ namespace Attendance
                 Attendance.Forms.frmMastEmpBlockPunching m = new Attendance.Forms.frmMastEmpBlockPunching();
                 m.MdiParent = this;
                 m.Show();
+            }
+        }
+
+        private void mnuReports_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(Globals.G_ReportServiceURL))
+            {
+                string sql = "Select Config_Val from Mast_OtherConfig where Config_Key = 'ReportServerBrowseURL'";
+                string turl = Utils.Helper.GetDescription(sql, Utils.Helper.constr);
+                if (!string.IsNullOrEmpty(turl))
+                {
+                    Process.Start("IExplore.exe", turl);
+                }
+                else
+                {
+                    MessageBox.Show("'ReportServerBrowseURL'<-ConfigKey is not configured, please configure from Admin->Config Key", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
             }
         }
         

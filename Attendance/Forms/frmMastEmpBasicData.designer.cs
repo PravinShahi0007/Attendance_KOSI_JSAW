@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             this.GrpMain = new System.Windows.Forms.GroupBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.txtBasic = new DevExpress.XtraEditors.TextEdit();
             this.txtWeekOff = new DevExpress.XtraEditors.ComboBoxEdit();
             this.lblLeft = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
@@ -77,9 +79,8 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
             this.btnUpdate = new System.Windows.Forms.Button();
-            this.txtBasic = new DevExpress.XtraEditors.TextEdit();
-            this.label13 = new System.Windows.Forms.Label();
             this.GrpMain.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.txtBasic.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtWeekOff.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chkActive.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chkOTFlg.Properties)).BeginInit();
@@ -109,7 +110,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.txtWrkGrpDesc.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtWrkGrpCode.Properties)).BeginInit();
             this.grpUserRights.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.txtBasic.Properties)).BeginInit();
             this.SuspendLayout();
             // 
             // GrpMain
@@ -163,6 +163,24 @@
             this.GrpMain.Size = new System.Drawing.Size(831, 302);
             this.GrpMain.TabIndex = 0;
             this.GrpMain.TabStop = false;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(15, 242);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(75, 14);
+            this.label13.TabIndex = 109;
+            this.label13.Text = "Cont. Basic :";
+            // 
+            // txtBasic
+            // 
+            this.txtBasic.Location = new System.Drawing.Point(110, 240);
+            this.txtBasic.Name = "txtBasic";
+            this.txtBasic.Properties.Mask.EditMask = "[+]?([0-9]*[.])?[0-9]+";
+            this.txtBasic.Properties.Mask.MaskType = DevExpress.XtraEditors.Mask.MaskType.RegEx;
+            this.txtBasic.Size = new System.Drawing.Size(100, 20);
+            this.txtBasic.TabIndex = 108;
             // 
             // txtWeekOff
             // 
@@ -545,7 +563,7 @@
             this.txtUnitCode.Size = new System.Drawing.Size(58, 20);
             this.txtUnitCode.TabIndex = 11;
             this.txtUnitCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtUnitCode_KeyDown);
-            this.txtUnitCode.Validated += new System.EventHandler(this.txtEmpUnqID_Validated);
+            this.txtUnitCode.Validated += new System.EventHandler(this.txtUnitCode_Validated);
             // 
             // txtEmpName
             // 
@@ -737,24 +755,6 @@
             this.btnUpdate.UseVisualStyleBackColor = false;
             this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
             // 
-            // txtBasic
-            // 
-            this.txtBasic.Location = new System.Drawing.Point(110, 240);
-            this.txtBasic.Name = "txtBasic";
-            this.txtBasic.Properties.Mask.EditMask = "[+]?([0-9]*[.])?[0-9]+";
-            this.txtBasic.Properties.Mask.MaskType = DevExpress.XtraEditors.Mask.MaskType.RegEx;
-            this.txtBasic.Size = new System.Drawing.Size(100, 20);
-            this.txtBasic.TabIndex = 108;
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(15, 242);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(75, 14);
-            this.label13.TabIndex = 109;
-            this.label13.Text = "Cont. Basic :";
-            // 
             // frmMastEmpBasicData
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -771,6 +771,7 @@
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmMastEmpBasicData_KeyDown);
             this.GrpMain.ResumeLayout(false);
             this.GrpMain.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.txtBasic.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtWeekOff.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chkActive.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chkOTFlg.Properties)).EndInit();
@@ -800,7 +801,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.txtWrkGrpDesc.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtWrkGrpCode.Properties)).EndInit();
             this.grpUserRights.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.txtBasic.Properties)).EndInit();
             this.ResumeLayout(false);
 
         }

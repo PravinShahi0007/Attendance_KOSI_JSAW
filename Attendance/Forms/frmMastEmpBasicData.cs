@@ -325,7 +325,7 @@ namespace Attendance.Forms
         {
             string err = DataValidate();
             bool WrkGrpChange = false;
-
+            bool UnitCodeChange = false;
             if (!string.IsNullOrEmpty(err))
             {
                 MessageBox.Show(err, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -397,13 +397,32 @@ namespace Attendance.Forms
 
                                 return;
                             }
-                            
-                            
+
+
                         }
-                        else
+                        else if (t.UnitCode != txtUnitCode.Text.Trim())
                         {
-                            WrkGrpChange = false;
+                            try
+                            {
+                                sql = "Exec sp_ChangeUnitCode '" + t.EmpUnqID + "','" + txtUnitCode.Text.Trim() + "';";
+                                cmd.CommandText = sql;
+                                cmd.ExecuteNonQuery();
+                                UnitCodeChange = true;
+                            }
+                            catch (Exception ex)
+                            {
+
+                                UnitCodeChange = false;
+                                GrpMain.Enabled = true;
+                                Cursor.Current = Cursors.Default;
+                                MessageBox.Show("Kindly Clear the Job Profile First,(EmpTypeCode,CatCode,GradeCode,DesgCode,DeptCode,StatCode)" + Environment.NewLine +
+                                   "and try again..."
+                               , "UnitCode Change Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                                return;
+                            }
                         }
+                        
 
                         if (string.IsNullOrEmpty(txtBasic.Text.Trim()))
                         {
@@ -434,7 +453,7 @@ namespace Attendance.Forms
                         cmd.ExecuteNonQuery();
 
 
-                        if(WrkGrpChange){
+                        if(WrkGrpChange || UnitCodeChange){
                             MessageBox.Show("Employee Job Profile is Discarded.." + Environment.NewLine +
                                     "Please Fill the Employee Job Profile Again.."                                
                                 , "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);

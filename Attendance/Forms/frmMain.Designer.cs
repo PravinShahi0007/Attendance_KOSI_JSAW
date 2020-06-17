@@ -82,6 +82,7 @@
             this.mnuMastFood = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuMastTime = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuMastRate = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuPunchingBlock = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuCostCent = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuCostCodeMast = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuEmpCostCode = new System.Windows.Forms.ToolStripMenuItem();
@@ -123,7 +124,7 @@
             this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
             this.stsUserDesc = new System.Windows.Forms.ToolStripStatusLabel();
             this.stsExtra = new System.Windows.Forms.ToolStripStatusLabel();
-            this.mnuPunchingBlock = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuReports = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -568,6 +569,13 @@
             this.mnuMastRate.Text = "Rate Master";
             this.mnuMastRate.Click += new System.EventHandler(this.mnuMastRate_Click);
             // 
+            // mnuPunchingBlock
+            // 
+            this.mnuPunchingBlock.Name = "mnuPunchingBlock";
+            this.mnuPunchingBlock.Size = new System.Drawing.Size(209, 22);
+            this.mnuPunchingBlock.Text = "Punching  Block/UnBlock";
+            this.mnuPunchingBlock.Click += new System.EventHandler(this.mnuPunchingBlock_Click);
+            // 
             // mnuCostCent
             // 
             this.mnuCostCent.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -649,7 +657,7 @@
             this.mnuLeaveBalEntry,
             this.mnuLeaveEntryLunch});
             this.mnuLeave.Name = "mnuLeave";
-            this.mnuLeave.Size = new System.Drawing.Size(152, 22);
+            this.mnuLeave.Size = new System.Drawing.Size(136, 22);
             this.mnuLeave.Text = "Leave";
             // 
             // mnuLeaveEntry
@@ -685,7 +693,7 @@
             this.mnuShift.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuShiftSchUpload});
             this.mnuShift.Name = "mnuShift";
-            this.mnuShift.Size = new System.Drawing.Size(152, 22);
+            this.mnuShift.Size = new System.Drawing.Size(136, 22);
             this.mnuShift.Text = "Shift";
             // 
             // mnuShiftSchUpload
@@ -704,7 +712,7 @@
             this.mnuBulkSan,
             this.mnuBulkLeavePost});
             this.mnuSanction.Name = "mnuSanction";
-            this.mnuSanction.Size = new System.Drawing.Size(152, 22);
+            this.mnuSanction.Size = new System.Drawing.Size(136, 22);
             this.mnuSanction.Text = "Sanction";
             // 
             // mnuManualSan
@@ -744,7 +752,7 @@
             // mnuAutoMailSender
             // 
             this.mnuAutoMailSender.Name = "mnuAutoMailSender";
-            this.mnuAutoMailSender.Size = new System.Drawing.Size(152, 22);
+            this.mnuAutoMailSender.Size = new System.Drawing.Size(136, 22);
             this.mnuAutoMailSender.Text = "Mail Sender";
             this.mnuAutoMailSender.Click += new System.EventHandler(this.mnuAutoMailSender_Click);
             // 
@@ -829,7 +837,8 @@
             // mnuHelp
             // 
             this.mnuHelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuAbout});
+            this.mnuAbout,
+            this.mnuReports});
             this.mnuHelp.Name = "mnuHelp";
             this.mnuHelp.Size = new System.Drawing.Size(44, 20);
             this.mnuHelp.Text = "Help";
@@ -837,7 +846,7 @@
             // mnuAbout
             // 
             this.mnuAbout.Name = "mnuAbout";
-            this.mnuAbout.Size = new System.Drawing.Size(107, 22);
+            this.mnuAbout.Size = new System.Drawing.Size(152, 22);
             this.mnuAbout.Text = "About";
             this.mnuAbout.Click += new System.EventHandler(this.mnuAbout_Click);
             // 
@@ -884,12 +893,12 @@
             this.stsExtra.Name = "stsExtra";
             this.stsExtra.Size = new System.Drawing.Size(0, 17);
             // 
-            // mnuPunchingBlock
+            // mnuReports
             // 
-            this.mnuPunchingBlock.Name = "mnuPunchingBlock";
-            this.mnuPunchingBlock.Size = new System.Drawing.Size(209, 22);
-            this.mnuPunchingBlock.Text = "Punching  Block/UnBlock";
-            this.mnuPunchingBlock.Click += new System.EventHandler(this.mnuPunchingBlock_Click);
+            this.mnuReports.Name = "mnuReports";
+            this.mnuReports.Size = new System.Drawing.Size(152, 22);
+            this.mnuReports.Text = "Reports";
+            this.mnuReports.Click += new System.EventHandler(this.mnuReports_Click);
             // 
             // frmMain
             // 
@@ -1012,6 +1021,7 @@
         private System.Windows.Forms.ToolStripMenuItem mnuBulkCostCodeSanManpower;
         private System.Windows.Forms.ToolStripMenuItem mnuBulkLeavePost;
         private System.Windows.Forms.ToolStripMenuItem mnuPunchingBlock;
+        private System.Windows.Forms.ToolStripMenuItem mnuReports;
 
 
     }

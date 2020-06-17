@@ -570,6 +570,56 @@ namespace Attendance.Classes
                 }
             }
 
+            string outerr1 = string.Empty;
+            //new function to insert int RESTLOG table if RestPost and RestApi configured in machine
+            DataSet ds = Utils.Helper.GetData("Select RestPost,RestAPI from ReaderConfig where MachineIP ='" + this._ip + "'", Utils.Helper.constr, out outerr1);
+            if (string.IsNullOrEmpty(outerr1))
+            {
+                bool hasrows = ds.Tables.Cast<DataTable>().Any(table => table.Rows.Count != 0);
+                if (hasrows)
+                {
+                    DataRow dr = ds.Tables[0].Rows[0];
+
+                    bool RestPost = Convert.ToBoolean((dr["RestPost"] == DBNull.Value) ? "FALSE" : dr["RestPost"]);
+                    string RestAPI = dr["RestAPI"].ToString().Trim();
+                    string Basesql = string.Empty;
+                    if (RestPost && !string.IsNullOrEmpty(RestAPI))
+                    {
+                        
+                        using (SqlConnection cn = new SqlConnection(Utils.Helper.constr))
+                        {
+                            using (SqlCommand cmd = new SqlCommand(Basesql, cn))
+                            {
+
+                                foreach (AttdLog t in AttdLogRec)
+                                {
+                                    Basesql = "Insert into RESTLog (PunchDate,EmpUnqID,IOFLG,MachineIP,LunchFlg,tYear,tYearMt,t1Date,AddDt,AddID,PostedFlg,PostUrl) "
+                                       + " values('" + t.PunchDate.ToString("yyyy-MM-dd HH:mm:ss") + "','" + t.EmpUnqID + "','" + t.IOFLG + "','" + t.MachineIP + "'" +
+                                        " ,'" + t.LunchFlg + "','" + t.tYear.ToString() + "','" + t.tYearMt.ToString() + "','" + t.t1Date.ToString("yyyy-MM-dd") + "'" +
+                                        " ,GetDate(),'Server',0,'" + RestAPI + "')";
+                                    try
+                                    {
+                                        cn.Open();
+                                        cmd.CommandType = CommandType.Text;
+                                        cmd.ExecuteNonQuery();                                        
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        err += ex.Message.ToString();
+                                    }
+                                    if(cn.State == ConnectionState.Open)
+                                        cn.Close();
+                                }
+
+                            }//command end
+                        }//connection end
+
+                    } //if rest check
+
+                }//if getdata 
+            }//if getdata err
+
+
             if (string.IsNullOrEmpty(write_err))
             {
                 if (this._autoclear)
@@ -923,7 +973,11 @@ namespace Attendance.Classes
                     return;
                 }
             }
-
+            if (!emp.Enabled)
+            {
+                err = "Employee is Blocked....";
+                return;
+            }
             
 
             //store registration info in db....

@@ -760,6 +760,35 @@ namespace Attendance.Forms
                     {
                         allerr += err + Environment.NewLine;
                     }
+                    else
+                    {
+
+                        using (SqlConnection cn = new SqlConnection(Utils.Helper.constr))
+                        {
+                            using (SqlCommand cmd = new SqlCommand())
+                            {
+                                try
+                                {
+                                    cn.Open();
+                                    cmd.Connection = cn;
+
+                                    int tmaxid = Convert.ToInt32(Utils.Helper.GetDescription("Select isnull(Max(ID),0) + 1 from MastMachineUserOperation", Utils.Helper.constr));
+                                    string sql = "insert into MastMachineUserOperation (ID,EmpUnqID,MachineIP,IOFLG,Operation,ReqDt,ReqBy,DoneFlg,AddDt,LastError) Values ('" + tmaxid + "','" +
+                                        emp.UserID + "','" + ip + "','" + ioflg + "','REGISTER',GetDate(),'" + Utils.User.GUserID + "',1,GetDate(),'Completed')";
+
+
+                                    cmd.CommandText = sql;
+                                    cmd.ExecuteNonQuery();
+
+                                }
+                                catch (Exception ex)
+                                {
+
+                                }
+                            }//using command
+                        }//using connection
+
+                    }
                 }
 
                 
@@ -1290,7 +1319,7 @@ namespace Attendance.Forms
 
                         foreach (UserBioInfo emp in tmpuser)
                         {
-                            sql = "Delete from tmp_machineusers where ReqNo ='" + reqno.ToString() + "' and MachineIP ='" + ip + "' and EmpUnqID ='" + emp.UserID + "' and RFID ='" + emp.CardNumber + "'";
+                            sql = "Delete from tmp_machineusers where ReqNo ='" + reqno.ToString() + "' and MachineIP ='" + ip + "' and EmpUnqID ='" + emp.UserID + "'";
                             cmd = new SqlCommand(sql, cn);
                             cmd.ExecuteNonQuery();
 
