@@ -588,30 +588,46 @@ namespace Attendance.Classes
                         
                         using (SqlConnection cn = new SqlConnection(Utils.Helper.constr))
                         {
-                            using (SqlCommand cmd = new SqlCommand(Basesql, cn))
+
+                            try
                             {
-
-                                foreach (AttdLog t in AttdLogRec)
+                                cn.Open();
+                                using (SqlCommand cmd = new SqlCommand())
                                 {
-                                    Basesql = "Insert into RESTLog (PunchDate,EmpUnqID,IOFLG,MachineIP,LunchFlg,tYear,tYearMt,t1Date,AddDt,AddID,PostedFlg,PostUrl) "
-                                       + " values('" + t.PunchDate.ToString("yyyy-MM-dd HH:mm:ss") + "','" + t.EmpUnqID + "','" + t.IOFLG + "','" + t.MachineIP + "'" +
-                                        " ,'" + t.LunchFlg + "','" + t.tYear.ToString() + "','" + t.tYearMt.ToString() + "','" + t.t1Date.ToString("yyyy-MM-dd") + "'" +
-                                        " ,GetDate(),'Server',0,'" + RestAPI + "')";
-                                    try
-                                    {
-                                        cn.Open();
-                                        cmd.CommandType = CommandType.Text;
-                                        cmd.ExecuteNonQuery();                                        
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        err += ex.Message.ToString();
-                                    }
-                                    if(cn.State == ConnectionState.Open)
-                                        cn.Close();
-                                }
 
-                            }//command end
+                                    foreach (AttdLog t in AttdLogRec)
+                                    {
+                                        Basesql = "Insert into RESTLog (PunchDate,EmpUnqID,IOFLG,MachineIP,LunchFlg,tYear,tYearMt,t1Date,AddDt,AddID,PostedFlg,PostUrl) "
+                                           + " values('" + t.PunchDate.ToString("yyyy-MM-dd HH:mm:ss") + "','" + t.EmpUnqID + "','" + t.IOFLG + "','" + t.MachineIP + "'" +
+                                            " ,'" + t.LunchFlg + "','" + t.tYear.ToString() + "','" + t.tYearMt.ToString() + "','" + t.t1Date.ToString("yyyy-MM-dd") + "'" +
+                                            " ,GetDate(),'Server',0,'" + RestAPI + "')";
+                                        try
+                                        {
+                                            cmd.Connection = cn;
+                                            cmd.CommandText = Basesql;
+                                            cmd.CommandType = CommandType.Text;
+                                            cmd.ExecuteNonQuery();
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            using (System.IO.StreamWriter file = new System.IO.StreamWriter(fullpath, true))
+                                            {
+                                                file.WriteLine(ex.Message.ToString());
+                                            }
+                                        }
+                                        
+                                    }//end for each
+
+                                }//command end
+                            }
+                            catch (Exception ex)
+                            {
+                                using (System.IO.StreamWriter file = new System.IO.StreamWriter(fullpath, true))
+                                {
+                                    file.WriteLine(ex.Message.ToString());
+                                }
+                            }                           
+                            
                         }//connection end
 
                     } //if rest check
