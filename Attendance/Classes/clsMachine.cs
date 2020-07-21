@@ -961,19 +961,7 @@ namespace Attendance.Classes
             emp.SetUserInfoForMachine(tEmpUnqID);
             emp.GetBioInfoFromDB(tEmpUnqID);
 
-            ////check user rights for the wrkgrp
-            ////'if not move next emp
-            //if(!Globals.GetWrkGrpRights(635,emp.WrkGrp,emp.UserID))
-            //{
-            //    err = "You are not Authorised...";
-            //    return;
-            //}
-
-            //if(string.IsNullOrEmpty(emp.CardNumber))
-            //{
-            //    err = "RFID Card Number not found...";
-            //    return;
-            //}
+            
 
             if (_messflg)
             {
@@ -1081,11 +1069,11 @@ namespace Attendance.Classes
                 return;
             }
 
-            //if(string.IsNullOrEmpty(emp.CardNumber))
-            //{
-            //    err = "RFID Card No. is Required...";
-            //    return;
-            //}
+            if (!emp.Enabled)
+            {
+                err = "Employee is Blocked....";
+                return;
+            }
             
             //store registration info in db....
             StoreHistoryinDB(emp.UserID, true);
@@ -1134,6 +1122,8 @@ namespace Attendance.Classes
                                     this.CZKEM1.SetUserTmpExStr(_machineno, emp.UserID, Convert.ToInt32(dr["idx"]), 1, dr["TmpData"].ToString());  
                                 }
                             }
+
+
                         }
                     }
                     

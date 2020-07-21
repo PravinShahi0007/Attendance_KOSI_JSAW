@@ -254,7 +254,7 @@ namespace Attendance.Forms
             }
 
             DataSet ds = new DataSet();
-            string sql = "select EmpUnqID,EmpName,WrkGrp,UnitCode,MessCode,MessGrpCode,PayrollFlg,ContractFlg,Active From MastEmp where EmpUnqID ='" + txtEmpUnqID.Text.Trim() + "' And Active = 1";
+            string sql = "select EmpUnqID,EmpName,WrkGrp,UnitCode,MessCode,MessGrpCode,PayrollFlg,ContractFlg,Active,PunchingBlocked From MastEmp where EmpUnqID ='" + txtEmpUnqID.Text.Trim() + "' And Active = 1";
 
             ds = Utils.Helper.GetData(sql, Utils.Helper.constr);
             bool hasRows = ds.Tables.Cast<DataTable>()
@@ -273,7 +273,15 @@ namespace Attendance.Forms
                     chkActive.Checked = Convert.ToBoolean(dr["Active"]);
                     chkComp.Checked = Convert.ToBoolean(dr["PayrollFlg"]);
                     chkCont.Checked = Convert.ToBoolean(dr["ContractFlg"]);
-                    
+
+                    bool isBlocked = Convert.ToBoolean(dr["PunchingBlocked"]);
+                    if (isBlocked)
+                    {
+                        chkActive.Checked = false;
+                        MessageBox.Show("This Employee is Blocked...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
                     txtWrkGrpCode_Validated(sender, e);
                     txtUnitCode_Validated(sender, e);
                     txtMessCode_Validated(sender, e);
@@ -377,6 +385,31 @@ namespace Attendance.Forms
                     err = string.Empty;
                     Application.DoEvents();
                     m.Register(tEmpUnqID,out err);
+                    using (SqlConnection cn = new SqlConnection(Utils.Helper.constr))
+                    {
+                        using (SqlCommand cmd = new SqlCommand())
+                        {
+                            try
+                            {
+                                cn.Open();
+                                cmd.Connection = cn;
+
+                                int tmaxid = Convert.ToInt32(Utils.Helper.GetDescription("Select isnull(Max(ID),0) + 1 from MastMachineUserOperation", Utils.Helper.constr));
+
+                                string sql = "insert into MastMachineUserOperation (ID,EmpUnqID,MachineIP,IOFLG,Operation,ReqDt,ReqBy,DoneFlg,AddDt,LastError) Values ('" + tmaxid + "','" +
+                                    tEmpUnqID + "','" + ip + "','" + ioflg + "','BULKREGISTER',GetDate(),'" + Utils.User.GUserID + "',1,GetDate(),'Completed')";
+
+
+                                cmd.CommandText = sql;
+                                cmd.ExecuteNonQuery();
+
+                            }
+                            catch (Exception ex)
+                            {
+
+                            }
+                        }//using command
+                    }
                     dr["Remarks"] = (!string.IsNullOrEmpty(err)?err:"Registered");
                         
                 }
@@ -976,23 +1009,39 @@ namespace Attendance.Forms
                 m.DeleteUser(tUserList, out err, out tempusers);
                 m.RefreshData();
                 m.EnableDevice(true);
-                //string allerr = "";
-                //foreach (UserBioInfo emp in tempusers)
-                //{
-                //    allerr += (emp.err.Length > 0 ? emp.UserID + emp.err : "");
-                //}
 
-                //if (string.IsNullOrEmpty(allerr.Replace(Environment.NewLine, "")))
-                //{
-                    gv_avbl.SetRowCellValue(i, "Remarks", "Deleted..");
-                //}
-                //else
-                //{
-                //    gv_avbl.SetRowCellValue(i, "Remarks", allerr);
-                //}
-                //m.RefreshData();
-                m.DisConnect(out err);
+                foreach (UserBioInfo emp in tempusers)
+                {
+                    using (SqlConnection cn = new SqlConnection(Utils.Helper.constr))
+                    {
+                        using (SqlCommand cmd = new SqlCommand())
+                        {
+                            try
+                            {
+                                cn.Open();
+                                cmd.Connection = cn;
+
+                                int tmaxid = Convert.ToInt32(Utils.Helper.GetDescription("Select isnull(Max(ID),0) + 1 from MastMachineUserOperation", Utils.Helper.constr));
+
+                                string sql = "insert into MastMachineUserOperation (ID,EmpUnqID,MachineIP,IOFLG,Operation,ReqDt,ReqBy,DoneFlg,AddDt,LastError) Values ('" + tmaxid + "','" +
+                                    emp.UserID + "','" + ip + "','" + ioflg + "','DELETE',GetDate(),'" + Utils.User.GUserID + "',1,GetDate(),'Completed')";
+
+
+                                cmd.CommandText = sql;
+                                cmd.ExecuteNonQuery();
+
+                            }
+                            catch (Exception ex)
+                            {
+
+                            }
+                        }//using command
+                    }//using connection
+                }
+
                 
+                gv_avbl.SetRowCellValue(i, "Remarks", "Deleted..");
+                m.DisConnect(out err);
                 Application.DoEvents();
 
                 //grd_Emp.DataSource = tempusers.Select(myClass => new { myClass.UserID, myClass.UserName, myClass.err }).ToList();
@@ -1260,10 +1309,26 @@ namespace Attendance.Forms
                     
                     }
                     
-                    using (SqlCommand cmd = new SqlCommand(sql, con))
+                    using (SqlCommand cmd = new SqlCommand())
                     {
+                        cmd.Connection = con;
+                        cmd.CommandText = sql;
+                        cmd.CommandType = CommandType.Text;
                         cmd.ExecuteNonQuery();
+
+                        if (txtOldRFID.Text.Trim() != txtNewRFID.Text.Trim())
+                        {
+                            int tmaxid = Convert.ToInt32(Utils.Helper.GetDescription("Select isnull(Max(ID),0) + 1 from MastMachineUserOperation", Utils.Helper.constr));
+                            sql = "insert into MastMachineUserOperation (ID,EmpUnqID,MachineIP,IOFLG,Operation,ReqDt,ReqBy,DoneFlg,AddDt,LastError,Remarks) Values ('" + tmaxid + "','" +
+                                tEmpUnqID + "','9999','B','RFID Change',GetDate(),'" + Utils.User.GUserID + "',1,GetDate(),'Completed','Changed from " + txtOldRFID.Text.Trim() + "->" + txtNewRFID.Text.Trim() + "')";
+
+
+                            cmd.CommandText = sql;
+                            cmd.ExecuteNonQuery();
+                        }
+
                     }
+
                     
                 }
                 catch(Exception ex)
@@ -1617,6 +1682,33 @@ namespace Attendance.Forms
                     err = string.Empty;
 
                     m.DeleteUser(tEmpUnqID, out err);
+
+                    using (SqlConnection cn = new SqlConnection(Utils.Helper.constr))
+                    {
+                        using (SqlCommand cmd = new SqlCommand())
+                        {
+                            try
+                            {
+                                cn.Open();
+                                cmd.Connection = cn;
+
+                                int tmaxid = Convert.ToInt32(Utils.Helper.GetDescription("Select isnull(Max(ID),0) + 1 from MastMachineUserOperation", Utils.Helper.constr));
+
+                                string sql = "insert into MastMachineUserOperation (ID,EmpUnqID,MachineIP,IOFLG,Operation,ReqDt,ReqBy,DoneFlg,AddDt,LastError) Values ('" + tmaxid + "','" +
+                                    tEmpUnqID + "','" + ip + "','" + ioflg + "','BULKDELETE',GetDate(),'" + Utils.User.GUserID + "',1,GetDate(),'Completed')";
+
+
+                                cmd.CommandText = sql;
+                                cmd.ExecuteNonQuery();
+
+                            }
+                            catch (Exception ex)
+                            {
+
+                            }
+                        }//using command
+                    }//using connection
+
                     dr["Remarks"] = (!string.IsNullOrEmpty(err) ? err : "Deleted");
                     Application.DoEvents();
                 }

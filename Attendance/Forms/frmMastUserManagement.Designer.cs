@@ -74,6 +74,7 @@
             this.btnRegister = new DevExpress.XtraEditors.SimpleButton();
             this.btnSelAll = new DevExpress.XtraEditors.SimpleButton();
             this.grpButtons2 = new System.Windows.Forms.GroupBox();
+            this.btnDevInfo = new DevExpress.XtraEditors.SimpleButton();
             this.btnSetTime = new DevExpress.XtraEditors.SimpleButton();
             this.btnUnlock = new DevExpress.XtraEditors.SimpleButton();
             this.btnUnlockMaster = new DevExpress.XtraEditors.SimpleButton();
@@ -140,7 +141,6 @@
             this.grpButtons11 = new System.Windows.Forms.GroupBox();
             this.grd_Upload = new DevExpress.XtraGrid.GridControl();
             this.gv_Upload = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.btnDevInfo = new DevExpress.XtraEditors.SimpleButton();
             this.tblp.SuspendLayout();
             this.grpButtons12.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cmbListMachine1.Properties)).BeginInit();
@@ -716,6 +716,7 @@
             this.btnUnBlock.Size = new System.Drawing.Size(120, 27);
             this.btnUnBlock.TabIndex = 10;
             this.btnUnBlock.Text = "&Unblock";
+            this.btnUnBlock.Visible = false;
             this.btnUnBlock.Click += new System.EventHandler(this.btnUnBlock_Click);
             // 
             // btnBlock
@@ -727,6 +728,7 @@
             this.btnBlock.Size = new System.Drawing.Size(120, 27);
             this.btnBlock.TabIndex = 9;
             this.btnBlock.Text = "Block";
+            this.btnBlock.Visible = false;
             this.btnBlock.Click += new System.EventHandler(this.btnBlock_Click);
             // 
             // btnDelete
@@ -776,6 +778,17 @@
             this.grpButtons2.Size = new System.Drawing.Size(650, 43);
             this.grpButtons2.TabIndex = 1;
             this.grpButtons2.TabStop = false;
+            // 
+            // btnDevInfo
+            // 
+            this.btnDevInfo.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDevInfo.Appearance.Options.UseFont = true;
+            this.btnDevInfo.Location = new System.Drawing.Point(533, 10);
+            this.btnDevInfo.Name = "btnDevInfo";
+            this.btnDevInfo.Size = new System.Drawing.Size(111, 27);
+            this.btnDevInfo.TabIndex = 14;
+            this.btnDevInfo.Text = "Device Info";
+            this.btnDevInfo.Click += new System.EventHandler(this.btnDevInfo_Click);
             // 
             // btnSetTime
             // 
@@ -1648,17 +1661,6 @@
             this.gv_Upload.OptionsView.ShowDetailButtons = false;
             this.gv_Upload.OptionsView.ShowGroupExpandCollapseButtons = false;
             this.gv_Upload.OptionsView.ShowGroupPanel = false;
-            // 
-            // btnDevInfo
-            // 
-            this.btnDevInfo.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDevInfo.Appearance.Options.UseFont = true;
-            this.btnDevInfo.Location = new System.Drawing.Point(533, 10);
-            this.btnDevInfo.Name = "btnDevInfo";
-            this.btnDevInfo.Size = new System.Drawing.Size(111, 27);
-            this.btnDevInfo.TabIndex = 14;
-            this.btnDevInfo.Text = "Device Info";
-            this.btnDevInfo.Click += new System.EventHandler(this.btnDevInfo_Click);
             // 
             // frmMastUserManagement
             // 

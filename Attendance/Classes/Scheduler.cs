@@ -19,6 +19,7 @@ using System.Diagnostics;
 using System.Net.Mail;
 using Attendance.RS2005;
 using Attendance.RE2005;
+using zkemkeeper;
 //using Microsoft.ReportingServices.Interfaces;
 using ParameterValue = Attendance.RE2005.ParameterValue;
 using Warning = Attendance.RE2005.Warning;
@@ -178,6 +179,7 @@ namespace Attendance.Classes
             RegSchedule_AutoArrival();
             RegSchedule_AutoProcess();
             RegSchedule_DownloadPunch();
+            RegSchedule_BlockUnBlockProcess();
             RegSchedule_AutoMail();
             _ShutDown = false;  
         }
@@ -493,6 +495,36 @@ namespace Attendance.Classes
 
                 }
             }
+        }
+
+        public void RegSchedule_BlockUnBlockProcess()
+        {
+            string jobid = "BlockUnBlockProcess";
+            string triggerid = "Trigger_BlockUnBlock";
+
+            // define the job and tie it to our HelloJob class
+            IJobDetail job = JobBuilder.Create<BlockUnBlockOperation>()
+                    .WithDescription("Blocking/UnBlocking of Employee")
+                .WithIdentity(jobid, "BlockUnBlockProcess")
+                .Build();
+
+            // Trigger the job to run every 3 minute
+            ITrigger trigger = TriggerBuilder.Create()
+                .WithIdentity(triggerid, "TRG_BlockUnBlock")
+                .StartNow()
+                .WithSchedule(CronScheduleBuilder.CronSchedule("0 0/15 * * * ?").WithMisfireHandlingInstructionFireAndProceed())
+                .Build();
+
+            // Tell quartz to schedule the job using our trigger
+            scheduler.ScheduleJob(job, trigger);
+
+            ServerMsg tMsg = new ServerMsg();
+            tMsg.MsgType = "Job Building";
+            tMsg.MsgTime = DateTime.Now;
+            tMsg.Message = string.Format("Building Job Job ID : {0} And Trigger ID : {1}", jobid, triggerid);
+            Scheduler.Publish(tMsg);
+
+
         }
 
 
@@ -1556,6 +1588,116 @@ namespace Attendance.Classes
                 _StatusWorker = false;
             }
         }
+
+        public class BlockUnBlockOperation : IJob
+        {
+            public void Execute(IJobExecutionContext context)
+            {
+
+                string cnerr = string.Empty;
+                string sql = "Select distinct MachineIP from MastMachineUserOperation where DoneFlg = 0 and Operation = 'BLOCK'";
+                DataSet dsMachine = Utils.Helper.GetData(sql, Utils.Helper.constr);
+                bool hasRows = dsMachine.Tables.Cast<DataTable>().Any(table => table.Rows.Count != 0);
+
+                if (hasRows)
+                {
+                    bool connected = false;
+
+                    foreach (DataRow MainRow in dsMachine.Tables[0].Rows)
+                    {
+                        connected = false;
+                        string machineip = MainRow["MachineIP"].ToString();
+                        CZKEM tmpMachine = new CZKEM();
+                        //check if any pending machine operation if yes do it....
+                        #region newmachinejob
+                        sql = "Select  * from MastMachineUserOperation where DoneFlg = 0 and Operation ='BLOCK' And MachineIP ='" + machineip + "'";
+                        DataSet ds = Utils.Helper.GetData(sql, Utils.Helper.constr);
+                        hasRows = ds.Tables.Cast<DataTable>().Any(table => table.Rows.Count != 0);
+                        if (hasRows)
+                        {
+                            connected = tmpMachine.Connect_Net(machineip, 4370);
+                            if (connected)
+                            {
+                                bool Deleted = false;
+                                bool isTft = tmpMachine.IsTFTMachine(1);
+
+                                foreach (DataRow dr in ds.Tables[0].Rows)
+                                {
+                                    string emp = dr["EmpUnqID"].ToString();
+                                    int id = Convert.ToInt32(dr["ID"]);
+
+                                    ServerMsg tMsg = new ServerMsg();
+                                    tMsg.MsgTime = DateTime.Now;
+                                    tMsg.MsgType = "Machine Operation->";
+                                    tMsg.Message = "Performing : " + "BLOCK" + " : EmpUnqID=>" + emp.ToString() + "->" + machineip;
+                                    Scheduler.Publish(tMsg);
+
+                                    string err = string.Empty;
+
+                                    if (!isTft)
+                                    {
+                                        Deleted = tmpMachine.DeleteEnrollData(1, Convert.ToInt32(emp), 1, 0);
+
+                                        Deleted = true;
+                                    }
+                                    else
+                                    {
+                                        Deleted = tmpMachine.DeleteEnrollData(1, Convert.ToInt32(emp), 1, 0);
+                                        //Deleted = tmpMachine.SSR_DeleteEnrollData(1, emp, 12);
+                                        tmpMachine.DelUserFace(1, emp, 50);
+                                        Deleted = true;
+                                    }
+
+                                    if (Deleted)
+                                    {
+                                        using (SqlConnection cn = new SqlConnection(Utils.Helper.constr))
+                                        {
+                                            try
+                                            {
+                                                cn.Open();
+                                                using (SqlCommand cmd = new SqlCommand())
+                                                {
+
+                                                    sql = "Update MastMachineUserOperation Set DoneFlg = 1, DoneDt = GetDate(), LastError = 'Completed' , " +
+                                                            " UpdDt=GetDate() where ID ='" + id.ToString() + "' and MachineIP = '" + machineip.ToString() + "' and Operation = 'BLOCK' and EmpUnqID ='" + emp.ToString() + "';";
+
+                                                    cmd.Connection = cn;
+                                                    cmd.CommandText = sql;
+                                                    cmd.ExecuteNonQuery();
+                                                }
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                tMsg.MsgTime = DateTime.Now;
+                                                tMsg.MsgType = "Machine Operation->";
+                                                tMsg.Message = "Error : " + "BLOCK" + " : EmpUnqID=>" + emp.ToString() + "->" + dr["MachineIP"].ToString() + "->" + ex.Message.ToString();
+                                                Scheduler.Publish(tMsg);
+
+                                            }
+
+                                        }//using
+                                    }
+                                }
+
+                            }//if connected
+
+                        }
+                        if (connected)
+                        {
+                            tmpMachine.Disconnect();
+                        }
+                        #endregion
+
+                        tmpMachine = null;
+
+                    }
+
+                }
+
+            }
+        }
+
+
 
         public class AutoDeleteExpireValidityEmp : IJob
         {
