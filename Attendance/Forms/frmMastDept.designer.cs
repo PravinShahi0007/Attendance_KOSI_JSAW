@@ -48,6 +48,8 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
             this.btnUpdate = new System.Windows.Forms.Button();
+            this.label6 = new System.Windows.Forms.Label();
+            this.txtDeptMail = new DevExpress.XtraEditors.TextEdit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.txtDeptDesc.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtDeptCode.Properties)).BeginInit();
@@ -58,10 +60,13 @@
             ((System.ComponentModel.ISupportInitialize)(this.txtWrkGrpDesc.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtWrkGrpCode.Properties)).BeginInit();
             this.grpUserRights.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.txtDeptMail.Properties)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label6);
+            this.groupBox1.Controls.Add(this.txtDeptMail);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.txtDeptDesc);
             this.groupBox1.Controls.Add(this.txtDeptCode);
@@ -77,7 +82,7 @@
             this.groupBox1.Controls.Add(this.txtWrkGrpCode);
             this.groupBox1.Location = new System.Drawing.Point(12, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(455, 156);
+            this.groupBox1.Size = new System.Drawing.Size(455, 237);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             // 
@@ -231,7 +236,7 @@
             this.grpUserRights.Controls.Add(this.btnDelete);
             this.grpUserRights.Controls.Add(this.btnUpdate);
             this.grpUserRights.Controls.Add(this.btnAdd);
-            this.grpUserRights.Location = new System.Drawing.Point(12, 165);
+            this.grpUserRights.Location = new System.Drawing.Point(12, 246);
             this.grpUserRights.Name = "grpUserRights";
             this.grpUserRights.Size = new System.Drawing.Size(452, 52);
             this.grpUserRights.TabIndex = 2;
@@ -281,11 +286,31 @@
             this.btnUpdate.UseVisualStyleBackColor = false;
             this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(8, 149);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(104, 15);
+            this.label6.TabIndex = 16;
+            this.label6.Text = "Dept. Head Email";
+            // 
+            // txtDeptMail
+            // 
+            this.txtDeptMail.Location = new System.Drawing.Point(118, 148);
+            this.txtDeptMail.Name = "txtDeptMail";
+            this.txtDeptMail.Properties.Mask.EditMask = "[0-9@.A-Za-z ]+";
+            this.txtDeptMail.Properties.Mask.MaskType = DevExpress.XtraEditors.Mask.MaskType.RegEx;
+            this.txtDeptMail.Properties.Mask.ShowPlaceHolders = false;
+            this.txtDeptMail.Properties.MaxLength = 50;
+            this.txtDeptMail.Size = new System.Drawing.Size(324, 20);
+            this.txtDeptMail.TabIndex = 15;
+            // 
             // frmMastDept
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(476, 229);
+            this.ClientSize = new System.Drawing.Size(476, 310);
             this.Controls.Add(this.grpUserRights);
             this.Controls.Add(this.groupBox1);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -304,6 +329,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.txtWrkGrpDesc.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtWrkGrpCode.Properties)).EndInit();
             this.grpUserRights.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.txtDeptMail.Properties)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -330,5 +356,7 @@
         private System.Windows.Forms.Label label5;
         private DevExpress.XtraEditors.TextEdit txtDeptDesc;
         private DevExpress.XtraEditors.TextEdit txtDeptCode;
+        private System.Windows.Forms.Label label6;
+        private DevExpress.XtraEditors.TextEdit txtDeptMail;
     }
 }

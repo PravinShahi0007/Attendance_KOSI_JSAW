@@ -325,13 +325,20 @@ namespace Attendance.Forms
             string tsubject = string.Empty;
             string tbody = string.Empty;
             string to = Utils.Helper.GetDescription(sql,Utils.Helper.constr);
+
+
+
+            string partbody = string.Empty;
+            
             //to = "anand.acharya@jindalsaw.com";
-            string cc = "";
+            string cc = Utils.Helper.GetDescription("Select Config_Val from Mast_OtherConfig Where Config_Key ='EMPBLOCKNOTIFICATION_CC'", Utils.Helper.constr);
             //string bcc = "anand.acharya@jindalsaw.com";
-            string bcc = "";
+            string bcc = Utils.Helper.GetDescription("Select Config_Val from Mast_OtherConfig Where Config_Key ='EMPBLOCKNOTIFICATION_BCC'", Utils.Helper.constr); ;
 
             if (mailtype == "BLOCK")
             {
+                partbody  = Utils.Helper.GetDescription("Select Config_Val from Mast_OtherConfig Where Config_Key ='EMPBLOCKNOTIFICATION_PartBodyBLOCK'", Utils.Helper.constr);
+           
                 tsubject = "Notification : Card Blocked for  " + ctrlEmp1.cEmp.EmpName + " (" + tEmpUnqID + " ) ";
             }
             string tblokeddt = string.Empty;
@@ -339,6 +346,7 @@ namespace Attendance.Forms
             if (mailtype == "UNBLOCK")
             {
                 tsubject = "Notification : Card Un-Blocked for " + ctrlEmp1.cEmp.EmpName + " (" + tEmpUnqID + " ) ";
+                partbody = Utils.Helper.GetDescription("Select Config_Val from Mast_OtherConfig Where Config_Key ='EMPBLOCKNOTIFICATION_PartBodyUnBLOCK'", Utils.Helper.constr);
             
                 //get last blocked date
                 string tsql = "Select Max(ReqDt) From MastMachineUserOperation where EmpUnqID = '" + tEmpUnqID + "' and Operation = 'BLOCK' ";
@@ -367,9 +375,30 @@ namespace Attendance.Forms
                     "</head>" +
                     "<body>";
 
+            string tempsql = "Select DeptEmail from MastDept Where UnitCode = '" + ctrlEmp1.cEmp.UnitCode + "' And WrkGrp ='" + ctrlEmp1.cEmp.WrkGrp + "' " +
+                " And DeptCode = '" + ctrlEmp1.cEmp.DeptCode + "'";
+            string tempdepthead = Utils.Helper.GetDescription(tempsql, Utils.Helper.constr);
+            
+            tempsql = "Select DeptEmail from MastDept Where UnitCode = '" + ctrlEmp1.cEmp.UnitCode + "' And WrkGrp ='" + ctrlEmp1.cEmp.WrkGrp + "' " +
+                " And DeptCode = '" + ctrlEmp1.cEmp.DeptCode + "' and StatCode ='" + ctrlEmp1.cEmp.StatCode + "'";
+
+            string tempstathead = Utils.Helper.GetDescription(tempsql, Utils.Helper.constr);
 
 
-            tbody = "Sir, <br/><p>" + "Subjected Action Performed as per below details:"  + "</p> <br/> <br/> " +
+            if (!string.IsNullOrEmpty(tempdepthead))
+            {
+                if (string.IsNullOrEmpty(to))
+                    to = tempdepthead;
+                else
+                    to += ";" + tempdepthead;
+            }
+                
+
+            if (!string.IsNullOrEmpty(tempstathead))
+                to += ";" + tempstathead;
+
+
+            tbody = "Sir, <br/><p>&nbsp;" + partbody  + "</p> <br/> <br/> " +
                 "<table>" +
                 "<tr><td>EmpCode : </td><td>" + tEmpUnqID  + "</td></tr>" +
                 "<tr><td>EmpName : </td><td>" + ctrlEmp1.cEmp.EmpName + "</td></tr>" +
@@ -387,7 +416,7 @@ namespace Attendance.Forms
                 
                 
             string err = EmailHelper.Email(to, cc, bcc, thead + tbody, tsubject, Globals.G_DefaultMailID,
-                        Globals.G_DefaultMailID, "", "");
+                        Globals.G_DefaultMailDisplayName, "", "");
             
             MessageBox.Show(mailtype + " : Notification : Status : " + err,"Information",MessageBoxButtons.OK,MessageBoxIcon.Information );
 

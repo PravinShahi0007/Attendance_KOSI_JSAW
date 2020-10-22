@@ -1210,7 +1210,7 @@ namespace Attendance.Classes
                             
                             MailAttachment m1 = new MailAttachment(results, attchnamePrefix + "Daily Performance Report.xls");
                             Email(dr["EmailTo"].ToString(), dr["EmailCopy"].ToString(), dr["BCCTo"].ToString(),
-                                "Daily Performance Report", substr2, Globals.G_DefaultMailID, "Attendance System", "", "", subscrid, m1);
+                                "Daily Performance Report", substr2, Globals.G_DefaultMailID, Globals.G_DefaultMailDisplayName, "", "", subscrid, m1);
                         }
                         else if(ReportType.ToUpper().Contains("ARRIVAL"))
                         {
@@ -1232,7 +1232,7 @@ namespace Attendance.Classes
                             results = rsExec.Render(format, deviceInfo, out extension, out mimeType, out encoding, out warnings, out streamIDs);
                             MailAttachment m1 = new MailAttachment(results, attchnamePrefix + "Daily Arrival Report.xls");
                             Email(dr["EmailTo"].ToString(), dr["EmailCopy"].ToString(), dr["BCCTo"].ToString(),
-                                "Daily Arrival Report ", substr2, Globals.G_DefaultMailID, "Attendance System", "", "", subscrid, m1);
+                                "Daily Arrival Report ", substr2, Globals.G_DefaultMailID, Globals.G_DefaultMailDisplayName, "", "", subscrid, m1);
                         }
 
                     }

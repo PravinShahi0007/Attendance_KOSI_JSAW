@@ -66,6 +66,8 @@
             this.label6 = new System.Windows.Forms.Label();
             this.txtCatDesc = new DevExpress.XtraEditors.TextEdit();
             this.txtCatCode = new DevExpress.XtraEditors.TextEdit();
+            this.label9 = new System.Windows.Forms.Label();
+            this.txtStatMail = new DevExpress.XtraEditors.TextEdit();
             this.grpUserRights.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.xtraTabControl1)).BeginInit();
             this.xtraTabControl1.SuspendLayout();
@@ -90,6 +92,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.txtShiftCode.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtCatDesc.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtCatCode.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtStatMail.Properties)).BeginInit();
             this.SuspendLayout();
             // 
             // btnAdd
@@ -181,6 +184,8 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label9);
+            this.groupBox1.Controls.Add(this.txtStatMail);
             this.groupBox1.Controls.Add(this.txtStatDesc);
             this.groupBox1.Controls.Add(this.txtStatCode);
             this.groupBox1.Controls.Add(this.label5);
@@ -529,6 +534,26 @@
             this.txtCatCode.EditValueChanged += new System.EventHandler(this.txtCatCode_EditValueChanged);
             this.txtCatCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtCatCode_KeyDown);
             // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(8, 144);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(97, 14);
+            this.label9.TabIndex = 18;
+            this.label9.Text = "Stat. Head Email";
+            // 
+            // txtStatMail
+            // 
+            this.txtStatMail.Location = new System.Drawing.Point(118, 143);
+            this.txtStatMail.Name = "txtStatMail";
+            this.txtStatMail.Properties.Mask.EditMask = "[0-9@.A-Za-z ]+";
+            this.txtStatMail.Properties.Mask.MaskType = DevExpress.XtraEditors.Mask.MaskType.RegEx;
+            this.txtStatMail.Properties.Mask.ShowPlaceHolders = false;
+            this.txtStatMail.Properties.MaxLength = 50;
+            this.txtStatMail.Size = new System.Drawing.Size(324, 20);
+            this.txtStatMail.TabIndex = 17;
+            // 
             // frmMastStat
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -566,6 +591,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.txtShiftCode.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtCatDesc.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtCatCode.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtStatMail.Properties)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -610,5 +636,7 @@
         private System.Windows.Forms.Label label7;
         private DevExpress.XtraGrid.GridControl grid;
         private DevExpress.XtraGrid.Views.Grid.GridView gridView1;
+        private System.Windows.Forms.Label label9;
+        private DevExpress.XtraEditors.TextEdit txtStatMail;
     }
 }
