@@ -493,7 +493,7 @@ namespace Attendance.Forms
                     {
                         cn.Open();
                         cmd.Connection = cn;
-                        string sql = "Insert into MastStat (CompCode,WrkGrp,UnitCode,DeptCode,StatCode,StatDesc,AddDt,AddID,StatMail) Values ('{0}','{1}','{2}','{3}','{4}','{5}',GetDate(),'{6}','{7}')";
+                        string sql = "Insert into MastStat (CompCode,WrkGrp,UnitCode,DeptCode,StatCode,StatDesc,AddDt,AddID,StatEMail) Values ('{0}','{1}','{2}','{3}','{4}','{5}',GetDate(),'{6}','{7}')";
                         sql = string.Format(sql, txtCompCode.Text.Trim().ToString(),
                             txtWrkGrpCode.Text.Trim().ToString(),
                             txtUnitCode.Text.Trim().ToString(),
@@ -873,7 +873,7 @@ namespace Attendance.Forms
                     
                     txtStatCode.Text = dr["StatCode"].ToString();
                     txtStatDesc.Text = dr["StatDesc"].ToString();
-                    txtStatMail.Text = dr["StatMail"].ToString();
+                    txtStatMail.Text = dr["StatEMail"].ToString();
 
                     txtCompCode_Validated(sender, e);
                     txtWrkGrpCode_Validated(sender, e);
