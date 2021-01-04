@@ -1924,13 +1924,14 @@ namespace Attendance.Classes
                                     tmpuser2.Password = emp.Password;
                                     tmpuser2.Previlege = emp.Previlege;
                                     tmpuser2.Enabled = emp.Enabled;
-                                    if (CZKEM1.GetUserTmpExStr(_machineno, _userid, i, out _fingerflg, out _fingertemp, out _fingerlength))
+                                    if (CZKEM1.GetUserTmpExStr(_machineno, emp.UserID, i, out _fingerflg, out _fingertemp, out _fingerlength))
                                     {
                                         tmpuser2.FingerIndex = i;
                                         tmpuser2.FingerLength = _fingerlength;
                                         tmpuser2.FingerTemp = _fingertemp;
                                         fingerusers.Add(tmpuser2);
                                     }
+                                                                        
                                 }  
                                 
                                 ///this.CZKEM1.GetUserTmpExStr(_machineno, emp.UserID, 0, out _fingerflg, out _fingertemp, out _fingerlength);
@@ -1953,8 +1954,11 @@ namespace Attendance.Classes
                                         tmpuser2.FingerIndex = i;
                                         tmpuser2.FingerLength = _fingerlength;
                                         tmpuser2.FingerTemp = _fingertemp;
+                                        emp.FingerTemp = _fingertemp;
+                                        emp.FingerLength = _fingerlength;
                                         fingerusers.Add(tmpuser2);
                                     }
+                                    
                                 }  
                                 
                                 //this.CZKEM1.GetUserTmpStr(_machineno, Convert.ToInt32(emp.UserID), 0, ref _fingertemp, ref _fingerlength);
@@ -1965,12 +1969,7 @@ namespace Attendance.Classes
                                 continue;
                             }
 
-                            emp.FingerTemp = _fingertemp;
-                            emp.FingerLength = _fingerlength;
-                            if (string.IsNullOrEmpty(_fingertemp))
-                            {
-                                emp.err += emp.err + "Finger Template Not Found..." + Environment.NewLine;
-                            }
+                           
                         }
 
                     }//end foreach loop
@@ -2003,16 +2002,13 @@ namespace Attendance.Classes
             }
             else
             {
-                foreach(UserBioInfo t in fingerusers)
-                {
-                    tUserList.Add(t);
-                }
-                
                 RetUserList = tUserList;
                 err = "Can not read all users";
                 return;
             }
+
             //save to db
+            
 
             foreach (UserBioInfo emp in tUserList)
             {
@@ -2038,8 +2034,17 @@ namespace Attendance.Classes
                 {
                     if (!string.IsNullOrEmpty(emp.FingerTemp))
                     {
-                        emp.StoreToDb(3, out err);
-                        emp.err += err;
+
+                        emp.UserName = "";
+                        foreach (UserBioInfo t in fingerusers)
+                        {
+                            
+                            emp.FingerIndex = t.FingerIndex;
+                            emp.FingerLength = t.FingerLength;
+                            emp.FingerTemp = t.FingerTemp;
+                            emp.StoreToDb(3, out err);
+                            emp.err += err;
+                        }
                     }
                 }
             }//end foreach store to db
