@@ -197,7 +197,7 @@ namespace Attendance.Forms
                 foreach (DataRow dr in ds.Tables[0].Rows)
                 {                      
                     dupadhar = true;
-                    dupadharemp = dr["EmpUnqID"].ToString() + "," + dr["EmpName"].ToString();
+                    dupadharemp = dr["EmpUnqID"].ToString() + "," + dr["EmpName"].ToString() + Environment.NewLine;
                 }
             }
             else
@@ -214,6 +214,20 @@ namespace Attendance.Forms
                     return err;
                 }
             }
+
+            string blacklist = Utils.Helper.GetDescription("Select AdharNo from MastEmpBlackList where BlackList = 1 and AdharNo='" + txtAdharNo.Text.Trim() + "'", Utils.Helper.constr);
+            if (!string.IsNullOrEmpty(blacklist))
+            {
+                err = err + "This Adhar Card is Black Listed..." + Environment.NewLine;
+                return err;
+            }
+
+            if (string.IsNullOrEmpty(txtCostCode.Text.Trim().ToString()) || string.IsNullOrEmpty(txtCostDesc.Text.Trim().ToString()))
+            {
+                err = err + "CostCode Assignment is required..." + Environment.NewLine;
+            }
+
+
 
             return err;
         }
@@ -259,10 +273,10 @@ namespace Attendance.Forms
                         cmd.Connection = cn;
                         string sql = "Insert into MastEmp (CompCode,WrkGrp,EmpUnqID,EmpName,FatherName," +
                             " UnitCode,MessCode,MessGrpCode,BirthDt,JoinDt,ValidFrom,ValidTo," +
-                            " ADHARNO,IDPRF3,IDPRF3No,Sex,ContractFlg,PayrollFlg,OTFLG,Weekoff,Active,AddDt,AddID,Basic) Values (" +
+                            " ADHARNO,IDPRF3,IDPRF3No,Sex,ContractFlg,PayrollFlg,OTFLG,Weekoff,Active,AddDt,AddID,Basic,CostCode) Values (" +
                             "'{0}','{1}','{2}','{3}','{4}' ," +
                             " '{5}',{6},{7},'{8}','{9}',{10},{11}," +
-                            " '{12}','ADHARCARD','{13}','{14}','{15}','{16}','{17}','{18}','1',GetDate(),'{19}','{20}')";
+                            " '{12}','ADHARCARD','{13}','{14}','{15}','{16}','{17}','{18}','1',GetDate(),'{19}','{20}','{21}')";
  
                         sql = string.Format(sql, txtCompCode.Text.Trim().ToString(), txtWrkGrpCode.Text.Trim().ToString(),txtEmpUnqID.Text.Trim().ToString(),txtEmpName.Text.Trim().ToString(),txtFatherName.Text.Trim(),
                             txtUnitCode.Text.ToString(),((txtMessCode.Text.Trim() == "")? "null" :"'"+txtMessCode.Text.Trim()+"'"),
@@ -272,11 +286,56 @@ namespace Attendance.Forms
                              ((txtWrkGrpCode.Text.Trim() == "COMP") ? "null" : "'" + txtValidTo.DateTime.ToString("yyyy-MM-dd") + "'"),
                              txtAdharNo.Text.Trim(),txtAdharNo.Text.Trim(),((Convert.ToBoolean(txtGender.EditValue))?1:0),
                             ((chkCont.Checked)?1:0),((chkComp.Checked)?1:0),((chkOTFlg.Checked)?1:0),txtWeekOff.Text.Trim(),
-                            Utils.User.GUserID,txtBasic.Text.Trim());
+                            Utils.User.GUserID, txtBasic.Text.Trim(), txtCostCode.Text.Trim().ToString());
 
                         cmd.CommandText = sql;
                         cmd.ExecuteNonQuery();
-                        
+
+                        //insert into costcode
+                        sql = "Insert into MastCostCodeEmp (EmpUnqID,ValidFrom,CostCode,AddDt,AddID) Values ('" + txtEmpUnqID.Text.Trim().ToString() + "','" + txtJoinDt.DateTime.ToString("yyyy-MM-dd") + "','" + txtCostCode.Text.Trim().ToString() + "',GetDate(),'" + Utils.User.GUserID + "')";
+                        cmd.CommandText = sql;
+                        cmd.ExecuteNonQuery();
+
+                        //new addition - 11/01/2022 - Contract employee must be blocked while new entry as this function is handled by thrid party.
+                        if (txtWrkGrpCode.Text.Trim().ToUpper() == "CONT")
+                        {
+                            int tmaxid = Convert.ToInt32(Utils.Helper.GetDescription("Select isnull(Max(ID),0) + 1 from MastMachineUserOperation", Utils.Helper.constr));
+                            string tEmpUnqID = txtEmpUnqID.Text.Trim().ToString();
+                            
+                            sql = "select MachineIP,IOFLG from readerconfig where canteenflg = 0  and [master] = 0 and compcode = '01' and Active = 1  ";
+                            DataSet ds = Utils.Helper.GetData(sql, Utils.Helper.constr);
+                            bool hasRows = ds.Tables.Cast<DataTable>().Any(table => table.Rows.Count != 0);
+
+                             if (hasRows)
+                             {
+                                 foreach (DataRow dr in ds.Tables[0].Rows)
+                                 {
+
+                                     sql = "insert into MastMachineUserOperation (ID,EmpUnqID,MachineIP,IOFLG,Operation,ReqDt,ReqBy,DoneFlg,AddDt,Remarks) Values ('" + tmaxid + "','" +
+                                         tEmpUnqID + "','" + dr["MachineIP"].ToString() + "','" + dr["IOFLG"].ToString() + "','BLOCK',GetDate(),'" + Utils.User.GUserID + "',0,GetDate(),'Cont-Emp-New-Entry')";
+
+
+                                     cmd.CommandText = sql;
+                                     cmd.ExecuteNonQuery();
+
+                                 }
+                               
+                             }
+
+                             cmd.CommandText = "Update MastEmp Set PunchingBlocked = 1 where CompCode = '01' and EmpUnqID = '" + tEmpUnqID + "'";
+                             cmd.ExecuteNonQuery();
+
+                             cmd.CommandText = "Update EmpBioData Set Blocked = 1 where EmpUnqID = '" + tEmpUnqID + "'";
+                             cmd.ExecuteNonQuery();
+
+                             cmd.CommandText = "Insert into MastEmpApproval (EmpUnqID,AddDt,Approved,AddID) Values ('" + tEmpUnqID + "',GetDate(),0,'" + Utils.User.GUserID + "')";
+                             cmd.ExecuteNonQuery();
+                             
+                             //SEND EMAIL NOTIFICATION. FOR NEW JOINING OF EMPLOYEE.
+                             sendmail("", tEmpUnqID);
+
+                        }
+
 
 
                         //createmuster
@@ -491,6 +550,9 @@ namespace Attendance.Forms
             txtEmpName.Text = "";
             txtFatherName.Text = "";
             txtAdharNo.Text = "";
+            
+            txtCostDesc.Text = "";
+            txtCostCode.Text = "";
 
             txtWrkGrpCode.Text = "";
             txtWrkGrpDesc.Text = "";
@@ -902,6 +964,11 @@ namespace Attendance.Forms
             txtMessGrpDesc.Text = cEmp.MessGrpDesc;
             
             txtAdharNo.Text = cEmp.AdharNo;
+
+            txtCostCode.Text = cEmp.CostCode;
+            txtCostDesc.Text = cEmp.CostDesc;
+
+
             txtJoinDt.EditValue = cEmp.JoinDt;
             txtValidFrom.EditValue = cEmp.ValidFrom;
             txtValidTo.EditValue = cEmp.ValidTo;
@@ -923,6 +990,82 @@ namespace Attendance.Forms
             oldCode = cEmp.EmpUnqID;
         }
 
+        private void txtCostCode_Validated(object sender, EventArgs e)
+        {
+            if (txtCostCode.Text.Trim() == "")
+            {
+                return;
+            }
+
+            DataSet ds = new DataSet();
+            string sql = "select * from MastCostCode where CostCode ='" + txtCostCode.Text.Trim() + "'";
+
+            ds = Utils.Helper.GetData(sql, Utils.Helper.constr);
+            bool hasRows = ds.Tables.Cast<DataTable>()
+                           .Any(table => table.Rows.Count != 0);
+
+            if (hasRows)
+            {
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    txtCostCode.Text = dr["CostCode"].ToString();
+                    txtCostDesc.Text = dr["CostDesc"].ToString();
+
+                }
+            }
+            else
+            {
+                txtCostCode.Text = "";
+                txtCostDesc.Text = "";
+            }
+
+        }
+
+        private void txtCostCode_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.F1 || e.KeyCode == Keys.F2)
+            {
+                List<string> obj = new List<string>();
+
+                Help_F1F2.ClsHelp hlp = new Help_F1F2.ClsHelp();
+                string sql = "";
+
+
+                sql = "Select CostCode,CostDesc From MastCostCode Where Active = 1";
+                if (e.KeyCode == Keys.F1)
+                {
+
+                    obj = (List<string>)hlp.Show(sql, "CostCode", "CostCode", typeof(string), Utils.Helper.constr, "System.Data.SqlClient",
+                   100, 300, 400, 600, 100, 100);
+                }
+                else
+                {
+                    obj = (List<string>)hlp.Show(sql, "CostDesc", "CostDesc", typeof(string), Utils.Helper.constr, "System.Data.SqlClient",
+                  100, 300, 400, 600, 100, 100);
+                }
+
+                if (obj.Count == 0)
+                {
+
+                    return;
+                }
+                else if (obj.ElementAt(0).ToString() == "0")
+                {
+                    return;
+                }
+                else if (obj.ElementAt(0).ToString() == "")
+                {
+                    return;
+                }
+                else
+                {
+
+                    txtCostCode.Text = obj.ElementAt(0).ToString();
+                    txtCostDesc.Text = obj.ElementAt(1).ToString();
+
+                }
+            }
+        }
 
         private void txtUnitCode_KeyDown(object sender, KeyEventArgs e)
         {
@@ -1171,5 +1314,69 @@ namespace Attendance.Forms
             
         }
 
+        private void sendmail(string mailtype, string tEmpUnqID)
+        {
+            string sql = "Select Config_Val from Mast_OtherConfig where Config_Key ='CONTNEWJOIN'";
+
+            string tsubject = string.Empty;
+            string tbody = string.Empty;
+            string to = Utils.Helper.GetDescription(sql, Utils.Helper.constr);
+            
+            string partbody = string.Empty;
+
+            //to = "anand.acharya@jindalsaw.com";
+            string cc = Utils.Helper.GetDescription("Select Config_Val from Mast_OtherConfig Where Config_Key ='CONTNEWJOIN_CC'", Utils.Helper.constr);
+            //string bcc = "anand.acharya@jindalsaw.com";
+            string bcc = Utils.Helper.GetDescription("Select Config_Val from Mast_OtherConfig Where Config_Key ='CONTNEWJOIN_BCC'", Utils.Helper.constr); ;
+
+           
+            tsubject = "Notification : Approval Request for " + txtEmpName.Text.Trim().ToUpper() + " (" + tEmpUnqID + "," + txtWrkGrpCode.Text.Trim().ToUpper() + ")";
+           
+
+            string thead = "<html> " +
+                    "<head>" +
+                    "<style>" +
+                    " table { " +
+                        " font-family: arial, sans-serif; " +
+                        " border-collapse: collapse; " +
+                        " width: 100%; " +
+                    "} " +
+
+                    " td, th { " +
+                    "    border: 1px solid #dddddd; " +
+                    "    text-align: left; " +
+                    "    padding: 8px; " +
+                    "} " +
+
+                    " tr:nth-child(even) { " +
+                    "    background-color: #dddddd;" +
+                    "}" +
+                    "</style>" +
+                    "</head>" +
+                    "<body>";
+
+            
+
+            clsEmp cEmp = new clsEmp();
+            cEmp.GetEmpDetails("01",tEmpUnqID);
+
+            tbody = "Sir, <br/><p>&nbsp; Kindly Approve Employee Joining.</p> <br/> <br/> " +
+                "<table>" +
+                "<tr><td>EmpCode : </td><td>" + tEmpUnqID + "</td></tr>" +
+                "<tr><td>EmpName : </td><td>" + cEmp.EmpName + "</td></tr>" +
+                "<tr><td>WrkGrp : </td><td>" + cEmp.WrkGrp + " " + (cEmp.ContCode) + "</td></tr>" +
+                "<tr><td>Action performed by</td><td>" + Utils.User.GUserID + "</td>" +
+                "<tr><td>Reason</td><td>New joining of Cont. Employee</td>" +
+                "<tr><td>Date And Time</td><td>" + DateTime.Now.ToString("yyyy-MM-dd HH:mm") + "</td></tr>" +
+                "</table><br/><br/> " +
+                 "*This is Auto-generated notification, do not reply on this e-mail id. </body></html>";
+
+
+            string err = EmailHelper.Email(to, cc, bcc, thead + tbody, tsubject, Globals.G_DefaultMailID,
+                        Globals.G_DefaultMailDisplayName, "", "");
+
+            //MessageBox.Show(mailtype + " : Notification : Status : " + err, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+        }
     }
 }

@@ -29,6 +29,10 @@
         private void InitializeComponent()
         {
             this.GrpMain = new System.Windows.Forms.GroupBox();
+            this.label18 = new System.Windows.Forms.Label();
+            this.txtCostDesc = new DevExpress.XtraEditors.TextEdit();
+            this.label16 = new System.Windows.Forms.Label();
+            this.txtCostCode = new DevExpress.XtraEditors.TextEdit();
             this.label13 = new System.Windows.Forms.Label();
             this.txtBasic = new DevExpress.XtraEditors.TextEdit();
             this.txtWeekOff = new DevExpress.XtraEditors.ComboBoxEdit();
@@ -80,6 +84,8 @@
             this.btnDelete = new System.Windows.Forms.Button();
             this.btnUpdate = new System.Windows.Forms.Button();
             this.GrpMain.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.txtCostDesc.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtCostCode.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtBasic.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtWeekOff.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chkActive.Properties)).BeginInit();
@@ -114,6 +120,10 @@
             // 
             // GrpMain
             // 
+            this.GrpMain.Controls.Add(this.label18);
+            this.GrpMain.Controls.Add(this.txtCostDesc);
+            this.GrpMain.Controls.Add(this.label16);
+            this.GrpMain.Controls.Add(this.txtCostCode);
             this.GrpMain.Controls.Add(this.label13);
             this.GrpMain.Controls.Add(this.txtBasic);
             this.GrpMain.Controls.Add(this.txtWeekOff);
@@ -163,6 +173,45 @@
             this.GrpMain.Size = new System.Drawing.Size(831, 302);
             this.GrpMain.TabIndex = 0;
             this.GrpMain.TabStop = false;
+            // 
+            // label18
+            // 
+            this.label18.Location = new System.Drawing.Point(453, 254);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(360, 34);
+            this.label18.TabIndex = 131;
+            this.label18.Text = "System does not allow to update CostCode from this module, kindly update from res" +
+    "pective module";
+            // 
+            // txtCostDesc
+            // 
+            this.txtCostDesc.Location = new System.Drawing.Point(575, 225);
+            this.txtCostDesc.Name = "txtCostDesc";
+            this.txtCostDesc.Properties.MaxLength = 100;
+            this.txtCostDesc.Properties.ReadOnly = true;
+            this.txtCostDesc.Size = new System.Drawing.Size(237, 20);
+            this.txtCostDesc.TabIndex = 129;
+            this.txtCostDesc.TabStop = false;
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(383, 227);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(67, 14);
+            this.label16.TabIndex = 130;
+            this.label16.Text = "CostCode :";
+            // 
+            // txtCostCode
+            // 
+            this.txtCostCode.Location = new System.Drawing.Point(456, 225);
+            this.txtCostCode.Name = "txtCostCode";
+            this.txtCostCode.Properties.Mask.EditMask = "[A-Z0-9]+";
+            this.txtCostCode.Properties.Mask.MaskType = DevExpress.XtraEditors.Mask.MaskType.RegEx;
+            this.txtCostCode.Size = new System.Drawing.Size(114, 20);
+            this.txtCostCode.TabIndex = 128;
+            this.txtCostCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtCostCode_KeyDown);
+            this.txtCostCode.Validated += new System.EventHandler(this.txtCostCode_Validated);
             // 
             // label13
             // 
@@ -771,6 +820,8 @@
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmMastEmpBasicData_KeyDown);
             this.GrpMain.ResumeLayout(false);
             this.GrpMain.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.txtCostDesc.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtCostCode.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtBasic.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtWeekOff.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chkActive.Properties)).EndInit();
@@ -858,5 +909,9 @@
         private DevExpress.XtraEditors.ComboBoxEdit txtWeekOff;
         private System.Windows.Forms.Label label13;
         private DevExpress.XtraEditors.TextEdit txtBasic;
+        private System.Windows.Forms.Label label18;
+        private DevExpress.XtraEditors.TextEdit txtCostDesc;
+        private System.Windows.Forms.Label label16;
+        private DevExpress.XtraEditors.TextEdit txtCostCode;
     }
 }

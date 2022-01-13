@@ -106,7 +106,7 @@ namespace Attendance.Forms
                 string sql = "";
 
 
-                sql = "Select CostCode,CostDesc From MastCostCode Where 1 = 1";
+                sql = "Select CostCode,CostDesc From MastCostCode Where active = 1";
                 if (e.KeyCode == Keys.F1)
                 {
 

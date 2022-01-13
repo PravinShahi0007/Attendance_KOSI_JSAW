@@ -842,7 +842,7 @@ namespace Attendance.Classes
             //check for CostCode ..
             if(this.CostCode.Trim() != "")
             {
-                string tsql1 = "select CostCode from MastCostCode where CostCode ='" + this.CostCode + "' " ;
+                string tsql1 = "select CostCode from MastCostCode where CostCode ='" + this.CostCode + "' and Active = 1 " ;
                 string t3 = Utils.Helper.GetDescription(tsql1,Utils.Helper.constr);
                 if(string.IsNullOrEmpty(t3)){
                     err += "Invalid CostCode.." + Environment.NewLine;

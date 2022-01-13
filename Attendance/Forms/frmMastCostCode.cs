@@ -263,7 +263,7 @@ namespace Attendance.Forms
             if (string.IsNullOrEmpty(err))
             {
 
-                DialogResult qs = MessageBox.Show("Are You Sure to Delete this CostCode...?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                DialogResult qs = MessageBox.Show("Are You Sure to Deactivate this CostCode...?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (qs == DialogResult.No)
                 {
                     return;
@@ -276,7 +276,7 @@ namespace Attendance.Forms
                         try
                         {
                             cn.Open();
-                            string sql = "Delete From MastCostCode where CostCode = '" + txtCostCode.Text.Trim() + "' ";
+                            string sql = "Update MastCostCode Set Active = 0 where CostCode = '" + txtCostCode.Text.Trim() + "' ";
                                 
                             cmd.CommandText = sql;
                             cmd.Connection = cn;

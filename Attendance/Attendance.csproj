@@ -218,11 +218,23 @@
     <Compile Include="Forms\frmHalfDayCheck.designer.cs">
       <DependentUpon>frmHalfDayCheck.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\frmMastEmpJoinApproval.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmMastEmpJoinApproval.designer.cs">
+      <DependentUpon>frmMastEmpJoinApproval.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\frmMastConfigKeys.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\frmMastConfigKeys.designer.cs">
       <DependentUpon>frmMastConfigKeys.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmMastEmpBlackList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmMastEmpBlackList.designer.cs">
+      <DependentUpon>frmMastEmpBlackList.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\frmMastEmpBlockPunching.cs">
       <SubType>Form</SubType>
@@ -615,8 +627,14 @@
     <EmbeddedResource Include="Forms\frmHalfDayCheck.resx">
       <DependentUpon>frmHalfDayCheck.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmMastEmpJoinApproval.resx">
+      <DependentUpon>frmMastEmpJoinApproval.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmMastConfigKeys.resx">
       <DependentUpon>frmMastConfigKeys.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmMastEmpBlackList.resx">
+      <DependentUpon>frmMastEmpBlackList.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmMastEmpBlockPunching.resx">
       <DependentUpon>frmMastEmpBlockPunching.cs</DependentUpon>

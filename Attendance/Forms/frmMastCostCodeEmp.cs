@@ -159,7 +159,7 @@ namespace Attendance.Forms
             }
 
             DataSet ds = new DataSet();
-            string sql = "select * from MastCostCode where CostCode ='" + txtCostCode.Text.Trim() + "'";
+            string sql = "select * from MastCostCode where CostCode ='" + txtCostCode.Text.Trim() + "' and Active = 1";
 
             ds = Utils.Helper.GetData(sql, Utils.Helper.constr);
             bool hasRows = ds.Tables.Cast<DataTable>()
@@ -187,7 +187,7 @@ namespace Attendance.Forms
                 string sql = "";
 
 
-                sql = "Select CostCode,CostDesc From MastCostCode Where 1 = 1";
+                sql = "Select CostCode,CostDesc From MastCostCode Where Active  = 1";
                 if (e.KeyCode == Keys.F1)
                 {
 

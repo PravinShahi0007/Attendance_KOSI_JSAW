@@ -33,7 +33,7 @@ namespace Attendance
             stsUserID.Text = Utils.User.GUserID;
             stsUserDesc.Text = Utils.User.GUserName;
 
-            this.Text = "Attendance System (JSAW): (Server->" + tdb.DataSource + ")";
+            this.Text = "Attendance System (JSAW): (Server->" + tdb.DataSource + ",DB->" + tdb.DbName + ")";
         }
 
         private void mnuUserRights_Click(object sender, EventArgs e)
@@ -1181,6 +1181,30 @@ namespace Attendance
                     MessageBox.Show("'ReportServerBrowseURL'<-ConfigKey is not configured, please configure from Admin->Config Key", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
 
+            }
+        }
+
+        private void mnuBlackListAdhar_Click(object sender, EventArgs e)
+        {
+            Form t = Application.OpenForms["frmMastEmpBlackList"];
+
+            if (t == null)
+            {
+                Attendance.Forms.frmMastEmpBlackList m = new Attendance.Forms.frmMastEmpBlackList();
+                m.MdiParent = this;
+                m.Show();
+            }
+        }
+
+        private void mnuJoiningApproval_Click(object sender, EventArgs e)
+        {
+            Form t = Application.OpenForms["frmMastEmpJoinApproval"];
+
+            if (t == null)
+            {
+                Attendance.Forms.frmMastEmpJoinApproval m = new Attendance.Forms.frmMastEmpJoinApproval();
+                m.MdiParent = this;
+                m.Show();
             }
         }
         

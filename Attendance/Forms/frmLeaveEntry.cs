@@ -1602,10 +1602,10 @@ namespace Attendance.Forms
             // search in year total leave posted count in attddata
             // reset avl leave 
             string err = DataValidate();
-            
-            if(!string.IsNullOrEmpty(err))
+
+            if (!string.IsNullOrEmpty(err))
             {
-                MessageBox.Show(err,"Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                MessageBox.Show(err, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -1619,71 +1619,71 @@ namespace Attendance.Forms
 
             this.Cursor = Cursors.WaitCursor;
 
-            string sql = "Select * from LeaveBal Where tYear= year(GetDate()) and EmpUnqID ='" + ctrlEmp1.txtEmpUnqID.Text.Trim().ToString() + "'";
+            string sql = "Select * from LeaveBal Where tYear= '" + txtFromDt.DateTime.Year.ToString() + "' and EmpUnqID ='" + ctrlEmp1.txtEmpUnqID.Text.Trim().ToString() + "'";
 
             //string sql = "Select * from LeaveBal Where tYear= 2018 and CompCode = '01' and WrkGrp = 'Comp' and EmpUnqID in (Select EmpUnqID From MastEmp Where Active = 1 and WrkGrp = 'Comp' and CompCode = '01')";
-            
-            DataSet ds = Utils.Helper.GetData(sql,Utils.Helper.constr);
+
+            DataSet ds = Utils.Helper.GetData(sql, Utils.Helper.constr);
             bool hasrow = ds.Tables.Cast<DataTable>().Any(table => table.Rows.Count != 0);
             if (hasrow)
             {
                 foreach (DataRow dr in ds.Tables[0].Rows)
                 {
-                    
+
                     double LeaveHalf = 0;
                     double LeaveFull = 0;
                     double LeaveAVL = 0;
 
-                    string sql2 = "Select Count(*) from AttdData Where LeaveTyp ='" + dr["LeaveTyp"].ToString() + "' " +
+                    string sql2 = "Select Count(*) from MastLeaveSchedule Where SchLeave ='" + dr["LeaveTyp"].ToString() + "' " +
                         " And tYear = '" + dr["tYear"].ToString() + "' And EmpUnqID ='" + dr["EmpUnqID"].ToString() + "'" +
-                        " And CompCode = '" + dr["CompCode"].ToString() + "' And WrkGrp ='" + dr["WrkGrp"].ToString() + "' and LeaveHalf = 0";
+                        " And WrkGrp ='" + dr["WrkGrp"].ToString() + "' and SchLeaveHalf = 0 ";
 
                     LeaveFull = Convert.ToDouble(Utils.Helper.GetDescription(sql2, Utils.Helper.constr));
 
-                     sql2 = "Select Count(*) from AttdData Where LeaveTyp ='" + dr["LeaveTyp"].ToString() + "' " +
+                    sql2 = "Select Count(*) from MastLeaveSchedule Where SchLeave ='" + dr["LeaveTyp"].ToString() + "' " +
                         " And tYear = '" + dr["tYear"].ToString() + "' And EmpUnqID ='" + dr["EmpUnqID"].ToString() + "'" +
-                        " And CompCode = '" + dr["CompCode"].ToString() + "' And WrkGrp ='" + dr["WrkGrp"].ToString() + "' and LeaveHalf = 1";
+                        " And WrkGrp ='" + dr["WrkGrp"].ToString() + "' and SchLeaveHalf = 1 ";
 
-                     LeaveHalf = Convert.ToDouble(Utils.Helper.GetDescription(sql2, Utils.Helper.constr));
+                    LeaveHalf = Convert.ToDouble(Utils.Helper.GetDescription(sql2, Utils.Helper.constr));
 
-                     if (LeaveHalf > 0)
-                     {
-                         LeaveHalf = LeaveHalf / 2;
-                     }
+                    if (LeaveHalf > 0)
+                    {
+                        LeaveHalf = LeaveHalf / 2;
+                    }
 
-                     LeaveAVL = LeaveFull + LeaveHalf;
+                    LeaveAVL = LeaveFull + LeaveHalf;
 
-                     using (SqlConnection cn = new SqlConnection(Utils.Helper.constr))
-                     {
-                         using (SqlCommand cmd = new SqlCommand())
-                         {
-                             try
-                             {
-                                 cn.Open();
-                                 sql = "Update LeaveBal Set AVL ='" + LeaveAVL.ToString() + "', UpdDt = GetDate(), UpdID ='" + Utils.User.GUserID + "' Where " +
-                                     " EmpUnqID = '" + dr["EmpUnqID"].ToString() + "' and " +
-                                     " tYear ='" + dr["tYear"].ToString() + "' and " +
-                                     " WrkGrp ='" + dr["WrkGrp"].ToString() + "' And " +
-                                     " LeaveTyp='" + dr["LeaveTyp"].ToString() + "' and " +
-                                     " CompCode ='" + dr["CompCode"].ToString() + "'";
+                    using (SqlConnection cn = new SqlConnection(Utils.Helper.constr))
+                    {
+                        using (SqlCommand cmd = new SqlCommand())
+                        {
+                            try
+                            {
+                                cn.Open();
+                                sql = "Update LeaveBal Set AVL ='" + LeaveAVL.ToString() + "',BAL = (OPN - " + LeaveAVL.ToString() + " + Enc), UpdDt = GetDate(), UpdID ='" + Utils.User.GUserID + "' Where " +
+                                    " EmpUnqID = '" + dr["EmpUnqID"].ToString() + "' and " +
+                                    " tYear ='" + dr["tYear"].ToString() + "' and " +
+                                    " WrkGrp ='" + dr["WrkGrp"].ToString() + "' And " +
+                                    " LeaveTyp='" + dr["LeaveTyp"].ToString() + "' and " +
+                                    " CompCode ='" + dr["CompCode"].ToString() + "'";
 
-                                 cmd.Connection = cn;
-                                 cmd.CommandType = CommandType.Text;
-                                 cmd.CommandText = sql;
-                                 cmd.ExecuteNonQuery();
-                             }
-                             catch (Exception ex)
-                             {
-                                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                             }
-                         }
-                     }
-                    
+                                cmd.Connection = cn;
+                                cmd.CommandType = CommandType.Text;
+                                cmd.CommandText = sql;
+                                cmd.ExecuteNonQuery();
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                    }
+
                 }//foreach
             }//if
 
             this.Cursor = Cursors.Default;
+            MessageBox.Show("Re-Consilation is completed...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
-
     }
 }
